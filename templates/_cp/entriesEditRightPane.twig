@@ -19,12 +19,14 @@
         'all': 'All Content',
       },
     })}}
+
+    {# Intentionally passing non-empty array to uncheck "all" #}
     {{ forms.checkboxSelectField({
       label: "Locales"|t,
       id: 'localeSync-targets',
       name: 'localeSync[targets]',
       options: targets.options,
-      values: targets.values,
+      values: targets.values|default(['']),
     })}}
   </div>
 </div>

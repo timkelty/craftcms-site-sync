@@ -5,16 +5,21 @@ class LocaleSyncService extends BaseApplicationComponent
 {
 	public function getElementOptionsHtml(BaseElementModel $element)
 	{
-		$locales = array_keys($entry->getLocales());
+		$isNew = $element->id === null;
+
+		if ($isNew) {
+			return;
+		}
+
+		$locales = array_keys($element->getLocales());
 		$settings = craft()->plugins->getPlugin('localeSync')->getSettings();
 
 		$targets = [
 			'options' => craft()->localeSync->getLocaleInputOptions($locales),
-			'values' => isset($settings->defaultTargets[$entry->locale]) ? $settings->defaultTargets[$entry->locale] : [],
+			'values' => isset($settings->defaultTargets[$element->locale]) ? $settings->defaultTargets[$element->locale] : [],
 		];
 
-		return craft()->templates->render('custom/_cp/entriesEditRightPane', [
-			'settings' => $this->getSettings(),
+		return craft()->templates->render('localesync/_cp/entriesEditRightPane', [
 			'targets' => $targets,
 			'enabled' => (bool) count($targets['values']),
 		]);
@@ -45,7 +50,7 @@ class LocaleSyncService extends BaseApplicationComponent
 		$pluginSettings = craft()->plugins->getPlugin('localeSync')->getSettings();
 		$element = $event->params['element'];
 
-		if ($event->params['isNewElement'] || !empty($elementSettings['enabled'])) {
+		if ($event->params['isNewElement'] || empty($elementSettings['enabled'])) {
 			return;
 		}
 
@@ -55,7 +60,7 @@ class LocaleSyncService extends BaseApplicationComponent
 
 		if ($elementSettings === null && isset($pluginSettings->defaultTargets[$element->locale])) {
 			$targets = $pluginSettings->defaultTargets[$element->locale];
-		} elseif (isset($elementSettings['targets'])) {
+		} elseif (!empty($elementSettings['targets'])) {
 			$targets = $elementSettings['targets'];
 		};
 

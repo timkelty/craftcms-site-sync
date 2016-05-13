@@ -21,11 +21,11 @@ class LocaleSyncPlugin extends BasePlugin
     public function init()
     {
         craft()->templates->hook('cp.entries.edit.right-pane', function (&$context) {
-            return craft()->localesync->getElementOptionsHtml($context['entry']);
+            return craft()->localeSync->getElementOptionsHtml($context['entry']);
         });
 
         craft()->on('elements.onBeforeSaveElement', function (Event $event) {
-            return craft()->localesync->syncElementContent($event, craft()->request->getPost('localeSync'));
+            return craft()->localeSync->syncElementContent($event, craft()->request->getPost('localeSync'));
         });
     }
 
@@ -143,9 +143,9 @@ class LocaleSyncPlugin extends BasePlugin
      */
     public function getSettingsHtml()
     {
-        return craft()->templates->render('custom/_cp/settings', [
+        return craft()->templates->render('localesync/_cp/settings', [
          'settings' => $this->getSettings(),
-         'localeInputOptions' => craft()->localesync->getLocaleInputOptions(),
+         'localeInputOptions' => craft()->localeSync->getLocaleInputOptions(),
      ]);
     }
 }
