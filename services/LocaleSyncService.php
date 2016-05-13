@@ -57,7 +57,8 @@ class LocaleSyncService extends BaseApplicationComponent
 		$this->element = $event->params['element'];
 		$this->elementSettings = $elementSettings;
 
-		if ($event->params['isNewElement'] || empty($elementSettings['enabled'])) {
+		// elementSettings will be null in HUD
+		if ($this->elementSettings !== null && ($event->params['isNewElement'] || empty($this->elementSettings['enabled']))) {
 			return;
 		}
 
@@ -65,10 +66,10 @@ class LocaleSyncService extends BaseApplicationComponent
 		$locales = $this->elementBeforeSave->getLocales();
 		$targets = [];
 
-		if ($elementSettings === null && isset($pluginSettings->defaultTargets[$this->element->locale])) {
+		if ($this->elementSettings === null && isset($pluginSettings->defaultTargets[$this->element->locale])) {
 			$targets = $pluginSettings->defaultTargets[$this->element->locale];
-		} elseif (!empty($elementSettings['targets'])) {
-			$targets = $elementSettings['targets'];
+		} elseif (!empty($this->elementSettings['targets'])) {
+			$targets = $this->elementSettings['targets'];
 		};
 
 		foreach ($locales as $localeId => $localeInfo)
