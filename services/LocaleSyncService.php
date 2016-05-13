@@ -72,26 +72,26 @@ class LocaleSyncService extends BaseApplicationComponent
 			$localizedElement = craft()->elements->getElementById($element->id, $element->elementType, $localeId);
 
 			if (
-				!$localizedElement ||
-				$element->locale === $localeId ||
-				($targets !== '*' && !in_array($localeId, $targets))
+				$localizedElement &&
+				$element->locale !== $localeId &&
+				($targets === '*' || in_array($localeId, $targets))
 			) {
-				continue;
-			}
+				foreach ($localizedElement->getFieldLayout()->getFields() as $fieldLayoutField) {
+					$field = $fieldLayoutField->getField();
+					$matches = $elementBeforeSave->content->{$field->handle} === $localizedElement->content->{$field->handle};
 
-			foreach ($localizedElement->getFieldLayout()->getFields() as $fieldLayoutField)
-			{
-				$field = $fieldLayoutField->getField();
-				$matches = $elementBeforeSave->content->{$field->handle} === $localizedElement->content->{$field->handle};
+					foreach ($localizedElement->getFieldLayout()->getFields() as $fieldLayoutField) {
+						$field = $fieldLayoutField->getField();
+						$matches = $elementBeforeSave->content->{$field->handle} === $localizedElement->content->{$field->handle};
+						$updateType = $elementSettings['content'] ?: 'matching';
 
-				if (
-					!$field->translatable ||
-					($elementSettings !== null && $elementSettings['content'] === 'matching' && !$matches)
-				) {
-					continue;
+						if ($field->translatable) {
+							if ($updateType === 'all' || ($updateType === 'matching' && $matches)) {
+								$localizedElement->content->{$field->handle} = $elementBeforeSave->content->{$field->handle};
+							}
+						}
+					}
 				}
-
-				$localizedElement->content->{$field->handle} = $element->content->{$field->handle};
 			}
 
 			craft()->content->saveContent($localizedElement, false, false);
