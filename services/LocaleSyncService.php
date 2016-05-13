@@ -10,13 +10,12 @@ class LocaleSyncService extends BaseApplicationComponent
 	public function getElementOptionsHtml(BaseElementModel $element)
 	{
 		$isNew = $element->id === null;
-
-		if ($isNew) {
-			return;
-		}
-
 		$locales = array_keys($element->getLocales());
 		$settings = craft()->plugins->getPlugin('localeSync')->getSettings();
+
+		if ($isNew || count($locales) < 2) {
+			return;
+		}
 
 		$targets = [
 			'options' => craft()->localeSync->getLocaleInputOptions($locales, [$element->locale]),

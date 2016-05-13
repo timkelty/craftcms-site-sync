@@ -1,14 +1,20 @@
 {% import "_includes/forms" as forms %}
-{% for locale in craft.i18n.getSiteLocales %}
-  <h2>{{ locale.name }}</h2>
+{% if craft.i18n.getSiteLocales|length > 1 %}
+  {% for locale in craft.i18n.getSiteLocales %}
+    <h2>{{ locale.name }}</h2>
 
-  {# Intentionally passing non-empty array to uncheck "all" #}
-  {{ forms.checkboxSelectField({
-    label: 'Default Locales for Sync',
-    instructions: 'Selected locales will be intially selected when editing elements.',
-    name: "defaultTargets[#{locale.id}]",
-    options: craft.localeSync.getLocaleInputOptions(null, [locale.id]),
-    values: settings.defaultTargets[locale.id]|default(['']),
-  })}}
-  <hr>
-{% endfor %}
+    {# Intentionally passing non-empty array to uncheck "all" #}
+    {{ forms.checkboxSelectField({
+      label: 'Default Locales for Sync',
+      instructions: 'Selected locales will be intially selected when editing elements.',
+      name: "defaultTargets[#{locale.id}]",
+      options: craft.localeSync.getLocaleInputOptions(null, [locale.id]),
+      values: settings.defaultTargets[locale.id]|default(['']),
+    })}}
+    <hr>
+  {% endfor %}
+{% else %}
+  <h2>No Locales Found</h2>
+  <p>Multiple locales are required to configure Locale Sync.</p>
+  <a class="btn" href="{{ url('settings/locales') }}">Add locales</a>
+{% endif %}
