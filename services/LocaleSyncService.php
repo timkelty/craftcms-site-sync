@@ -70,26 +70,26 @@ class LocaleSyncService extends BaseApplicationComponent
 		foreach ($locales as $localeId => $localeInfo)
 		{
 			$localizedElement = craft()->elements->getElementById($element->id, $element->elementType, $localeId);
+			$matchingTarget = $targets === '*' || in_array($localeId, $targets);
+			$updates = 0;
 
-			if (
-				$localizedElement &&
-				$element->locale !== $localeId &&
-				($targets === '*' || in_array($localeId, $targets))
-			) {
+			if ($localizedElement && $matchingTarget && $element->locale !== $localeId) {
 				foreach ($localizedElement->getFieldLayout()->getFields() as $fieldLayoutField) {
 					$field = $fieldLayoutField->getField();
 					$matches = $elementBeforeSave->content->{$field->handle} === $localizedElement->content->{$field->handle};
 					$updateType = $elementSettings['content'] ?: 'matching';
+					$updateField = $updateType === 'all' || ($updateType === 'matching' && $matches);
 
-					if ($field->translatable) {
-						if ($updateType === 'all' || ($updateType === 'matching' && $matches)) {
-							$localizedElement->content->{$field->handle} = $element->content->{$field->handle};
-						}
+					if ($field->translatable && $updateField) {
+						$localizedElement->content->{$field->handle} = $element->content->{$field->handle};
+						$updates++;
 					}
 				}
 			}
 
-			craft()->content->saveContent($localizedElement, false, false);
+			if ($updates) {
+				craft()->content->saveContent($localizedElement, false, false);
+			}
 		}
 	}
 }
