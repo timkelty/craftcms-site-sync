@@ -79,16 +79,11 @@ class LocaleSyncService extends BaseApplicationComponent
 				foreach ($localizedElement->getFieldLayout()->getFields() as $fieldLayoutField) {
 					$field = $fieldLayoutField->getField();
 					$matches = $elementBeforeSave->content->{$field->handle} === $localizedElement->content->{$field->handle};
+					$updateType = $elementSettings['content'] ?: 'matching';
 
-					foreach ($localizedElement->getFieldLayout()->getFields() as $fieldLayoutField) {
-						$field = $fieldLayoutField->getField();
-						$matches = $elementBeforeSave->content->{$field->handle} === $localizedElement->content->{$field->handle};
-						$updateType = $elementSettings['content'] ?: 'matching';
-
-						if ($field->translatable) {
-							if ($updateType === 'all' || ($updateType === 'matching' && $matches)) {
-								$localizedElement->content->{$field->handle} = $elementBeforeSave->content->{$field->handle};
-							}
+					if ($field->translatable) {
+						if ($updateType === 'all' || ($updateType === 'matching' && $matches)) {
+							$localizedElement->content->{$field->handle} = $element->content->{$field->handle};
 						}
 					}
 				}
