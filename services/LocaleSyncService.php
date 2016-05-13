@@ -3,6 +3,10 @@ namespace Craft;
 
 class LocaleSyncService extends BaseApplicationComponent
 {
+	public $elementBeforeSave;
+	public $element;
+	public $elementSettings;
+
 	public function getElementOptionsHtml(BaseElementModel $element)
 	{
 		$isNew = $element->id === null;
@@ -51,45 +55,71 @@ class LocaleSyncService extends BaseApplicationComponent
 	public function syncElementContent(Event $event, $elementSettings)
 	{
 		$pluginSettings = craft()->plugins->getPlugin('localeSync')->getSettings();
-		$element = $event->params['element'];
+		$this->element = $event->params['element'];
+		$this->elementSettings = $elementSettings;
 
 		if ($event->params['isNewElement'] || empty($elementSettings['enabled'])) {
 			return;
 		}
 
-		$elementBeforeSave = craft()->elements->getElementById($element->id, $element->elementType, $element->locale);
-		$locales = $elementBeforeSave->getLocales();
+		$this->elementBeforeSave = craft()->elements->getElementById($this->element->id, $this->element->elementType, $this->element->locale);
+		$locales = $this->elementBeforeSave->getLocales();
 		$targets = [];
 
-		if ($elementSettings === null && isset($pluginSettings->defaultTargets[$element->locale])) {
-			$targets = $pluginSettings->defaultTargets[$element->locale];
+		if ($elementSettings === null && isset($pluginSettings->defaultTargets[$this->element->locale])) {
+			$targets = $pluginSettings->defaultTargets[$this->element->locale];
 		} elseif (!empty($elementSettings['targets'])) {
 			$targets = $elementSettings['targets'];
 		};
 
 		foreach ($locales as $localeId => $localeInfo)
 		{
-			$localizedElement = craft()->elements->getElementById($element->id, $element->elementType, $localeId);
+			$localizedElement = craft()->elements->getElementById($this->element->id, $this->element->elementType, $localeId);
 			$matchingTarget = $targets === '*' || in_array($localeId, $targets);
-			$updates = 0;
+			$updates = false;
 
-			if ($localizedElement && $matchingTarget && $element->locale !== $localeId) {
+			if ($localizedElement && $matchingTarget && $this->element->locale !== $localeId) {
 				foreach ($localizedElement->getFieldLayout()->getFields() as $fieldLayoutField) {
 					$field = $fieldLayoutField->getField();
-					$matches = $elementBeforeSave->content->{$field->handle} === $localizedElement->content->{$field->handle};
-					$updateType = $elementSettings['content'] ?: 'matching';
-					$updateField = $updateType === 'all' || ($updateType === 'matching' && $matches);
 
-					if ($field->translatable && $updateField) {
-						$localizedElement->content->{$field->handle} = $element->content->{$field->handle};
-						$updates++;
+					if ($this->updateElement($localizedElement, $field)) {
+						$updates = true;
 					}
 				}
+
+				if ($this->updateElement($localizedElement, 'title')) {
+					$updates = true;
+				}
+
 			}
 
 			if ($updates) {
 				craft()->content->saveContent($localizedElement, false, false);
 			}
 		}
+	}
+
+	public function updateElement(&$element, $field)
+	{
+		$update = false;
+
+		if ($field instanceof Fieldmodel) {
+			$fieldHandle = $field->handle;
+			$translatable = $field->translatable;
+		} elseif ($field === 'title') {
+			$fieldHandle = $field;
+			$translatable = true;
+		}
+
+		$matches = $this->elementBeforeSave->content->$fieldHandle === $element->content->$fieldHandle;
+		$updateType = $this->elementSettings['content'] ?: 'matching';
+		$updateField = $updateType === 'all' || ($updateType === 'matching' && $matches);
+
+		if ($updateField && $translatable) {
+			$element->content->$fieldHandle = $this->element->content->$fieldHandle;
+			$update = true;
+		}
+
+		return $update;
 	}
 }
