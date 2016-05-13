@@ -1,0 +1,30 @@
+{% import "_includes/forms" as forms %}
+
+<div id='localeSync' class='pane meta'>
+  {{ forms.checkboxField({
+    label: 'Sync content to other locales?'|t,
+    id: 'localeSync-toggle',
+    name: 'localeSync[enabled]',
+    value: enabled,
+    checked: enabled,
+    toggle: '#localeSync-options',
+  }) }}
+  <div class="meta {% if not enabled %}hidden{% endif %}" id="localeSync-options">
+    {{ forms.selectField({
+      label: 'Content',
+      id: 'localeSync-content',
+      name: 'localeSync[content]',
+      options: {
+        'matching': 'Matching Content Only',
+        'all': 'All Content',
+      },
+    })}}
+    {{ forms.checkboxSelectField({
+      label: "Locales"|t,
+      id: 'localeSync-targets',
+      name: 'localeSync[targets]',
+      options: targets.options,
+      values: targets.values,
+    })}}
+  </div>
+</div>

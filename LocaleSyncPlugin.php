@@ -1,6 +1,8 @@
 <?php
+namespace Craft;
+
 /**
- * Locale Sync plugin for Craft CMS
+ * Locale Sync Plugin for Craft CMS
  *
  * Sync content to locales on element save.
  *
@@ -11,8 +13,6 @@
  * @since     1.0.0
  */
 
-namespace Craft;
-
 class LocaleSyncPlugin extends BasePlugin
 {
     /**
@@ -20,6 +20,13 @@ class LocaleSyncPlugin extends BasePlugin
      */
     public function init()
     {
+        craft()->templates->hook('cp.entries.edit.right-pane', function (&$context) {
+            return craft()->localesync->getElementOptionsHtml($context['entry']);
+        });
+
+        craft()->on('elements.onBeforeSaveElement', function (Event $event) {
+            return craft()->localesync->syncElementContent($event, craft()->request->getPost('localeSync'));
+        });
     }
 
     /**
@@ -27,7 +34,7 @@ class LocaleSyncPlugin extends BasePlugin
      */
     public function getName()
     {
-         return Craft::t('Locale Sync');
+        return Craft::t('Locale Sync');
     }
 
     /**
@@ -118,36 +125,27 @@ class LocaleSyncPlugin extends BasePlugin
     {
     }
 
-    /**
-     * @return array
-     */
-    protected function defineSettings()
-    {
-        return array(
-            'someSetting' => array(AttributeType::String, 'label' => 'Some Setting', 'default' => ''),
-        );
-    }
+     /**
+      * @return array
+      */
+     protected function defineSettings()
+     {
+         return [
+             'defaultTargets' => [
+                 AttributeType::Mixed,
+                 'default' => [],
+             ],
+         ];
+     }
 
     /**
      * @return mixed
      */
     public function getSettingsHtml()
     {
-       return craft()->templates->render('localesync/LocaleSync_Settings', array(
-           'settings' => $this->getSettings()
-       ));
+        return craft()->templates->render('custom/_cp/settings', [
+         'settings' => $this->getSettings(),
+         'localeInputOptions' => craft()->localesync->getLocaleInputOptions(),
+     ]);
     }
-
-    /**
-     * @param mixed $settings  The Widget's settings
-     *
-     * @return mixed
-     */
-    public function prepSettings($settings)
-    {
-        // Modify $settings here...
-
-        return $settings;
-    }
-
 }

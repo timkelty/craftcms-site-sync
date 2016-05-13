@@ -1,0 +1,14 @@
+{% import "_includes/forms" as forms %}
+{% for locale in craft.i18n.getSiteLocales %}
+  <h2>{{ locale.name }}</h2>
+
+  {# Intentionally passing non-empty array to uncheck "all" #}
+  {{ forms.checkboxSelectField({
+    label: 'Default Locales for Sync',
+    instructions: 'Selected locales will be intially selected when editing elements.',
+    name: "defaultTargets[#{locale.id}]",
+    options: localeInputOptions,
+    values: settings.defaultTargets[locale.id]|default(['']),
+  })}}
+  <hr>
+{% endfor %}
