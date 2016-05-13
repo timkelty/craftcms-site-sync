@@ -1,0 +1,14 @@
+{
+    "name": "timkelty/craft-localesync",
+    "description": "Sync content to locales on element save.",
+    "authors": [
+		{
+			"name": "Tim Kelty",
+			"homepage": "http://fusionary.com/"
+		}
+	],
+    "type": "craft-plugin",
+    "require": {
+        "composer/installers": "~1.0"
+    }
+}

@@ -1,4 +1,4 @@
-# Locale Sync plugin for Craft CMS
+# Locale Sync Plugin for Craft CMS
 
 Sync content to locales on element save.
 
