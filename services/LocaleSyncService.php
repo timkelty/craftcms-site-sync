@@ -15,7 +15,7 @@ class LocaleSyncService extends BaseApplicationComponent
 		$settings = craft()->plugins->getPlugin('localeSync')->getSettings();
 
 		$targets = [
-			'options' => craft()->localeSync->getLocaleInputOptions($locales),
+			'options' => craft()->localeSync->getLocaleInputOptions($locales, [$element->locale]),
 			'values' => isset($settings->defaultTargets[$element->locale]) ? $settings->defaultTargets[$element->locale] : [],
 		];
 
@@ -25,24 +25,27 @@ class LocaleSyncService extends BaseApplicationComponent
 		]);
 	}
 
-	public function getLocaleInputOptions($locales = null)
+	public function getLocaleInputOptions($locales = null, $exclude = [])
 	{
 		$locales = $locales ?: craft()->i18n->getSiteLocales();
-
-		return array_map(function($locale) {
+		$locales = array_map(function($locale) use ($exclude) {
 			if (!$locale instanceof LocaleModel) {
 				$locale = craft()->i18n->getLocaleById($locale);
 			}
 
-			if ($locale instanceof LocaleModel) {
+			if ($locale instanceof LocaleModel && !in_array($locale->id, $exclude)) {
 				$locale = [
 					'label' => $locale->name,
 					'value' => $locale->id,
 				];
+			} else {
+				$locale = null;
 			}
 
 			return $locale;
 		}, $locales);
+
+		return array_filter($locales);
 	}
 
 	public function syncElementContent(Event $event, $elementSettings)

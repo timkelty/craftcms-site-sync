@@ -7,7 +7,7 @@
     label: 'Default Locales for Sync',
     instructions: 'Selected locales will be intially selected when editing elements.',
     name: "defaultTargets[#{locale.id}]",
-    options: localeInputOptions,
+    options: craft.localeSync.getLocaleInputOptions(null, [locale.id]),
     values: settings.defaultTargets[locale.id]|default(['']),
   })}}
   <hr>
