@@ -15,16 +15,17 @@ namespace Craft;
 
 class LocaleSyncPlugin extends BasePlugin
 {
+
     /**
      * @return mixed
      */
     public function init()
     {
-        craft()->templates->hook('cp.entries.edit.right-pane', function (&$context) {
+        craft()->templates->hook('cp.entries.edit.right-pane', function(&$context) {
             return craft()->localeSync->getElementOptionsHtml($context['entry']);
         });
 
-        craft()->on('elements.onBeforeSaveElement', function (Event $event) {
+        craft()->on('elements.onBeforeSaveElement', function(Event $event) {
             return craft()->localeSync->syncElementContent($event, craft()->request->getPost('localeSync'));
         });
     }

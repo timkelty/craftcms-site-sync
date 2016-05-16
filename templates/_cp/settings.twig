@@ -6,7 +6,7 @@
     {# Intentionally passing non-empty array to uncheck "all" #}
     {{ forms.checkboxSelectField({
       label: 'Default Locales for Sync',
-      instructions: 'Selected locales will be intially selected when editing elements.',
+      instructions: 'The default selections when editing elements. When editing via the HUD, these defaults will be used.'|t,
       name: "defaultTargets[#{locale.id}]",
       options: craft.localeSync.getLocaleInputOptions(null, [locale.id]),
       values: settings.defaultTargets[locale.id]|default(['']),

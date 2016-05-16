@@ -63,14 +63,16 @@ class LocaleSyncService extends BaseApplicationComponent
 		}
 
 		$this->elementBeforeSave = craft()->elements->getElementById($this->element->id, $this->element->elementType, $this->element->locale);
-		$locales = $this->elementBeforeSave->getLocales();
+		$locales = $this->element->getLocales();
+		$defaultTargets = array_key_exists($this->element->locale, $pluginSettings->defaultTargets) ? $pluginSettings->defaultTargets[$this->element->locale] : [];
+		$elementTargets = $this->elementSettings['targets'];
 		$targets = [];
 
-		if ($this->elementSettings === null && isset($pluginSettings->defaultTargets[$this->element->locale])) {
-			$targets = $pluginSettings->defaultTargets[$this->element->locale];
-		} elseif (!empty($this->elementSettings['targets'])) {
-			$targets = $this->elementSettings['targets'];
-		};
+		if (!empty($elementTargets)) {
+			$targets = $elementTargets;
+		} elseif (!empty($defaultTargets)) {
+			$targets = $defaultTargets;
+		}
 
 		foreach ($locales as $localeId => $localeInfo)
 		{
@@ -95,6 +97,10 @@ class LocaleSyncService extends BaseApplicationComponent
 
 			if ($updates) {
 				craft()->content->saveContent($localizedElement, false, false);
+
+				if ($localizedElement instanceof EntryModel) {
+					craft()->entryRevisions->saveVersion($localizedElement);
+				}
 			}
 		}
 	}
