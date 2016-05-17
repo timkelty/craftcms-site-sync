@@ -2,17 +2,16 @@
 namespace Craft;
 
 /**
- * Locale Sync Plugin for Craft CMS
+ * Locale Sync Plugin for Craft CMS.
  *
  * Sync content to locales on element save.
  *
  * @author    Tim Kelty
  * @copyright Copyright (c) 2016 Tim Kelty
+ *
  * @link      http://fusionary.com/
- * @package   LocaleSync
  * @since     1.0.0
  */
-
 class LocaleSyncPlugin extends BasePlugin
 {
 
@@ -21,11 +20,11 @@ class LocaleSyncPlugin extends BasePlugin
      */
     public function init()
     {
-        craft()->templates->hook('cp.entries.edit.right-pane', function(&$context) {
+        craft()->templates->hook('cp.entries.edit.right-pane', function (&$context) {
             return craft()->localeSync->getElementOptionsHtml($context['entry']);
         });
 
-        craft()->on('elements.onBeforeSaveElement', function(Event $event) {
+        craft()->on('elements.onBeforeSaveElement', function (Event $event) {
             return craft()->localeSync->syncElementContent($event, craft()->request->getPost('localeSync'));
         });
     }
@@ -102,42 +101,45 @@ class LocaleSyncPlugin extends BasePlugin
         return false;
     }
 
-    /**
-     */
     public function onBeforeInstall()
     {
     }
 
-    /**
-     */
     public function onAfterInstall()
     {
     }
 
-    /**
-     */
     public function onBeforeUninstall()
     {
     }
 
-    /**
-     */
     public function onAfterUninstall()
     {
     }
 
-     /**
-      * @return array
-      */
-     protected function defineSettings()
-     {
-         return [
-             'defaultTargets' => [
-                 AttributeType::Mixed,
-                 'default' => [],
-             ],
-         ];
-     }
+    /**
+     * @return array
+     */
+    protected function defineSettings()
+    {
+        $locales = craft()->i18n->getSiteLocales();
+        $localeDefaults = [
+            'enabled' => true,
+            'overwrite' => false,
+            'targets' => [],
+        ];
+        $settings = [
+            'localeDefaults' => [
+                'type' => AttributeType::Mixed,
+            ],
+        ];
+
+        foreach ($locales as $locale) {
+            $settings['localeDefaults']['default'][$locale->id] = $localeDefaults;
+        }
+
+        return $settings;
+    }
 
     /**
      * @return mixed
@@ -145,8 +147,8 @@ class LocaleSyncPlugin extends BasePlugin
     public function getSettingsHtml()
     {
         return craft()->templates->render('localesync/_cp/settings', [
-         'settings' => $this->getSettings(),
-         'localeInputOptions' => craft()->localeSync->getLocaleInputOptions(),
-     ]);
+            'settings' => $this->getSettings(),
+            'localeInputOptions' => craft()->localeSync->getLocaleInputOptions(),
+        ]);
     }
 }

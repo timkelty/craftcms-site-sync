@@ -3,9 +3,9 @@ namespace Craft;
 
 class LocaleSyncService extends BaseApplicationComponent
 {
-	public $elementBeforeSave;
-	public $element;
-	public $elementSettings;
+	private $_elementBeforeSave;
+	private $_element;
+	private $_elementSettings;
 
 	public function getElementOptionsHtml(BaseElementModel $element)
 	{
@@ -17,14 +17,9 @@ class LocaleSyncService extends BaseApplicationComponent
 			return;
 		}
 
-		$targets = [
-			'options' => craft()->localeSync->getLocaleInputOptions($locales, [$element->locale]),
-			'values' => isset($settings->defaultTargets[$element->locale]) ? $settings->defaultTargets[$element->locale] : [],
-		];
-
 		return craft()->templates->render('localesync/_cp/entriesEditRightPane', [
-			'targets' => $targets,
-			'enabled' => (bool) count($targets['values']),
+			'settings' => $settings,
+			'localeId' => $element->locale,
 		]);
 	}
 
@@ -54,18 +49,18 @@ class LocaleSyncService extends BaseApplicationComponent
 	public function syncElementContent(Event $event, $elementSettings)
 	{
 		$pluginSettings = craft()->plugins->getPlugin('localeSync')->getSettings();
-		$this->element = $event->params['element'];
-		$this->elementSettings = $elementSettings;
+		$this->_element = $event->params['element'];
+		$this->_elementSettings = $elementSettings;
 
-		// elementSettings will be null in HUD
-		if ($this->elementSettings !== null && ($event->params['isNewElement'] || empty($this->elementSettings['enabled']))) {
+		// elementSettings will be null in HUD, where we want to continue with defaults
+		if ($this->_elementSettings !== null && ($event->params['isNewElement'] || empty($this->_elementSettings['enabled']))) {
 			return;
 		}
 
-		$this->elementBeforeSave = craft()->elements->getElementById($this->element->id, $this->element->elementType, $this->element->locale);
-		$locales = $this->element->getLocales();
-		$defaultTargets = array_key_exists($this->element->locale, $pluginSettings->defaultTargets) ? $pluginSettings->defaultTargets[$this->element->locale] : [];
-		$elementTargets = $this->elementSettings['targets'];
+		$this->_elementBeforeSave = craft()->elements->getElementById($this->_element->id, $this->_element->elementType, $this->_element->locale);
+		$locales = $this->_element->getLocales();
+		$defaultTargets = array_key_exists($this->_element->locale, $pluginSettings->localeDefaults) ? $pluginSettings->localeDefaults[$this->_element->locale]['targets'] : [];
+		$elementTargets = $this->_elementSettings['targets'];
 		$targets = [];
 
 		if (!empty($elementTargets)) {
@@ -76,11 +71,11 @@ class LocaleSyncService extends BaseApplicationComponent
 
 		foreach ($locales as $localeId => $localeInfo)
 		{
-			$localizedElement = craft()->elements->getElementById($this->element->id, $this->element->elementType, $localeId);
+			$localizedElement = craft()->elements->getElementById($this->_element->id, $this->_element->elementType, $localeId);
 			$matchingTarget = $targets === '*' || in_array($localeId, $targets);
 			$updates = false;
 
-			if ($localizedElement && $matchingTarget && $this->element->locale !== $localeId) {
+			if ($localizedElement && $matchingTarget && $this->_element->locale !== $localeId) {
 				foreach ($localizedElement->getFieldLayout()->getFields() as $fieldLayoutField) {
 					$field = $fieldLayoutField->getField();
 
@@ -117,12 +112,12 @@ class LocaleSyncService extends BaseApplicationComponent
 			$translatable = true;
 		}
 
-		$matches = $this->elementBeforeSave->content->$fieldHandle === $element->content->$fieldHandle;
-		$overwrite = (isset($this->elementSettings['overwrite']) && $this->elementSettings['overwrite']);
+		$matches = $this->_elementBeforeSave->content->$fieldHandle === $element->content->$fieldHandle;
+		$overwrite = (isset($this->_elementSettings['overwrite']) && $this->_elementSettings['overwrite']);
 		$updateField = $overwrite || $matches;
 
 		if ($updateField && $translatable) {
-			$element->content->$fieldHandle = $this->element->content->$fieldHandle;
+			$element->content->$fieldHandle = $this->_element->content->$fieldHandle;
 			$update = true;
 		}
 

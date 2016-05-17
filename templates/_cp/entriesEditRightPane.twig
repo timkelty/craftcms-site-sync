@@ -1,11 +1,12 @@
 {% import "_includes/forms" as forms %}
 
+{% set localeSettings = settings.localeDefaults[localeId] %}
+{% set enabled = localeSettings.enabled|default %}
 <div id='localeSync' class='pane meta'>
   {{ forms.lightswitchField({
     label: 'Sync Locales'|t,
     id: 'localeSync-toggle',
     name: 'localeSync[enabled]',
-    value: enabled,
     on: enabled,
     toggle: '#localeSync-options',
   }) }}
@@ -22,7 +23,7 @@
       label: label,
       name: 'localeSync[overwrite]',
       id: 'localeSync-overwrite',
-      on: false,
+      on: localeSettings.overwrite|default,
     })}}
 
     {# Intentionally passing non-empty array to uncheck "all" #}
@@ -30,8 +31,8 @@
       label: "Locales"|t,
       id: 'localeSync-targets',
       name: 'localeSync[targets]',
-      options: targets.options,
-      values: targets.values|default(['']),
+      options: craft.localeSync.getLocaleInputOptions(null, [localeId]),
+      values: localeSettings.targets|default(['']),
     })}}
   </div>
 </div>

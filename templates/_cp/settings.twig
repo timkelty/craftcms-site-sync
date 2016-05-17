@@ -1,15 +1,35 @@
 {% import "_includes/forms" as forms %}
+
 {% if craft.i18n.getSiteLocales|length > 1 %}
+  <h2>Locale Defaults</h2>
+  <hr>
   {% for locale in craft.i18n.getSiteLocales %}
-    <h2>{{ locale.name }}</h2>
+    <h3>{{ locale.name }}</h3>
+    {{ forms.lightswitchField({
+      label: 'Sync Locales'|t,
+      name: "localeDefaults[#{locale.id}][enabled]",
+      on: settings.localeDefaults[locale.id]['enabled']|default(false),
+    }) }}
+
+    {% set instructions -%}
+      <span class="warning">All translatable fields in other locales will be overwritten with this content.</span><br>
+      <span>Without this selection, only fields with identical content (before these edits) will be synced.</span>
+    {% endset %}
+
+    {{ forms.lightswitchField({
+      label: 'Overwrite'|t,
+      instructions: instructions,
+      name: "localeDefaults[#{locale.id}][overwrite]",
+      on: settings.localeDefaults[locale.id]['overwrite']|default(false),
+    })}}
 
     {# Intentionally passing non-empty array to uncheck "all" #}
     {{ forms.checkboxSelectField({
       label: 'Default Locales for Sync',
       instructions: 'The default selections when editing elements. When editing via the HUD, these defaults will be used.'|t,
-      name: "defaultTargets[#{locale.id}]",
+      name: "localeDefaults[#{locale.id}][targets]",
       options: craft.localeSync.getLocaleInputOptions(null, [locale.id]),
-      values: settings.defaultTargets[locale.id]|default(['']),
+      values: settings.localeDefaults[locale.id].targets|default(['']),
     })}}
     <hr>
   {% endfor %}
