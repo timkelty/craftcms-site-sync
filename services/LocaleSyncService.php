@@ -118,8 +118,8 @@ class LocaleSyncService extends BaseApplicationComponent
 		}
 
 		$matches = $this->elementBeforeSave->content->$fieldHandle === $element->content->$fieldHandle;
-		$updateType = $this->elementSettings['content'] ?: 'matching';
-		$updateField = $updateType === 'all' || ($updateType === 'matching' && $matches);
+		$overwrite = (isset($this->elementSettings['overwrite']) && $this->elementSettings['overwrite']);
+		$updateField = $overwrite || $matches;
 
 		if ($updateField && $translatable) {
 			$element->content->$fieldHandle = $this->element->content->$fieldHandle;

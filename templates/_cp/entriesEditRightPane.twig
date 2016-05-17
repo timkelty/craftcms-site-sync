@@ -1,23 +1,28 @@
 {% import "_includes/forms" as forms %}
 
 <div id='localeSync' class='pane meta'>
-  {{ forms.checkboxField({
-    label: 'Sync content to other locales?'|t,
+  {{ forms.lightswitchField({
+    label: 'Sync Locales'|t,
     id: 'localeSync-toggle',
     name: 'localeSync[enabled]',
     value: enabled,
-    checked: enabled,
+    on: enabled,
     toggle: '#localeSync-options',
   }) }}
   <div class="meta {% if not enabled %}hidden{% endif %}" id="localeSync-options">
-    {{ forms.selectField({
-      label: 'Content',
-      id: 'localeSync-content',
-      name: 'localeSync[content]',
-      options: {
-        'matching': 'Matching Content Only',
-        'all': 'All Content',
-      },
+    {% set label %}
+      {{ 'Overwrite'|t }}
+      <div class="info">
+        <span class="warning">All translatable fields in other locales will be <strong>overwritten</strong> with this content.</span>
+        Without this selection, only fields with identical content (before these edits) will be synced.
+      </div>
+    {% endset %}
+
+    {{ forms.lightswitchField({
+      label: label,
+      name: 'localeSync[overwrite]',
+      id: 'localeSync-overwrite',
+      on: false,
     })}}
 
     {# Intentionally passing non-empty array to uncheck "all" #}
