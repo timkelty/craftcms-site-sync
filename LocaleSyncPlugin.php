@@ -50,7 +50,7 @@ class LocaleSyncPlugin extends BasePlugin
      */
     public function getDocumentationUrl()
     {
-        return 'https://github.com/timkelty/localesync/blob/master/README.md';
+        return 'https://github.com/timkelty/craft-localesync/blob/master/README.md';
     }
 
     /**
@@ -58,7 +58,7 @@ class LocaleSyncPlugin extends BasePlugin
      */
     public function getReleaseFeedUrl()
     {
-        return 'https://raw.githubusercontent.com/timkelty/localesync/master/releases.json';
+        return 'https://raw.githubusercontent.com/timkelty/craft-localesync/master/releases.json';
     }
 
     /**
@@ -66,7 +66,7 @@ class LocaleSyncPlugin extends BasePlugin
      */
     public function getVersion()
     {
-        return '1.0.0';
+        return '1.2.1';
     }
 
     /**
