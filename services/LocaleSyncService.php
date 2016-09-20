@@ -59,6 +59,11 @@ class LocaleSyncService extends BaseApplicationComponent
 
 		$this->_elementBeforeSave = craft()->elements->getElementById($this->_element->id, $this->_element->elementType, $this->_element->locale);
 		$locales = $this->_element->getLocales();
+		// Matrix elements return a non-associative array from getLocales(). Normalize it.
+		if ($this->_element instanceof MatrixBlockModel) {
+			$locales = array_flip($locales);
+		}
+
 		$defaultTargets = array_key_exists($this->_element->locale, $pluginSettings->localeDefaults) ? $pluginSettings->localeDefaults[$this->_element->locale]['targets'] : [];
 		$elementTargets = $this->_elementSettings['targets'];
 		$targets = [];
