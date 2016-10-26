@@ -27,7 +27,6 @@ Locale Sync allows you to copy content from the current locale when saving an el
 
 ## Roadmap
 
-* Work with Matrix fields
 * Implement element settings as a fieldtype
 
 Brought to you by [Tim Kelty](http://fusionary.com/)
