@@ -4,7 +4,7 @@ Sync content to other locales on element save.
 
 ## Installation
 
-- Via Composer: `composer require timkelty/craft-elementoptions`
+- Via Composer: `composer require timkelty/craft-localesync`
 - Download: Unzip to `craft/plugins/localesync`
 
 Locale Sync works on Craft 2.4.x and Craft 2.5.x.
