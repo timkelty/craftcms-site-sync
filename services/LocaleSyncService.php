@@ -48,59 +48,61 @@ class LocaleSyncService extends BaseApplicationComponent
 
 	public function syncElementContent(Event $event, $elementSettings)
 	{
-		$pluginSettings = craft()->plugins->getPlugin('localeSync')->getSettings();
-		$this->_element = $event->params['element'];
-		$this->_elementSettings = $elementSettings;
+		if ($elementSettings !== null) {
+			$pluginSettings = craft()->plugins->getPlugin('localeSync')->getSettings();
+			$this->_element = $event->params['element'];
+			$this->_elementSettings = $elementSettings;
 
-		// elementSettings will be null in HUD, where we want to continue with defaults
-		if ($this->_elementSettings !== null && ($event->params['isNewElement'] || empty($this->_elementSettings['enabled']))) {
-			return;
-		}
-
-		$this->_elementBeforeSave = craft()->elements->getElementById($this->_element->id, $this->_element->elementType, $this->_element->locale);
-		$locales = $this->_element->getLocales();
-
-		// Matrix elements return a non-associative array from getLocales(). Normalize it.
-		if ($this->_element instanceof MatrixBlockModel) {
-			$locales = array_flip($locales);
-		}
-
-		$defaultTargets = array_key_exists($this->_element->locale, $pluginSettings->localeDefaults) ? $pluginSettings->localeDefaults[$this->_element->locale]['targets'] : [];
-		$elementTargets = $this->_elementSettings['targets'];
-		$targets = [];
-
-		if (!empty($elementTargets)) {
-			$targets = $elementTargets;
-		} elseif (!empty($defaultTargets)) {
-			$targets = $defaultTargets;
-		}
-
-		foreach ($locales as $localeId => $localeInfo)
-		{
-			$localizedElement = craft()->elements->getElementById($this->_element->id, $this->_element->elementType, $localeId);
-			$matchingTarget = $targets === '*' || in_array($localeId, $targets);
-			$updates = false;
-
-			if ($localizedElement && $matchingTarget && $this->_element->locale !== $localeId) {
-				foreach ($localizedElement->getFieldLayout()->getFields() as $fieldLayoutField) {
-					$field = $fieldLayoutField->getField();
-
-					if ($this->updateElement($localizedElement, $field)) {
-						$updates = true;
-					}
-				}
-
-				if ($this->updateElement($localizedElement, 'title')) {
-					$updates = true;
-				}
-
+			// elementSettings will be null in HUD, where we want to continue with defaults
+			if ($this->_elementSettings !== null && ($event->params['isNewElement'] || empty($this->_elementSettings['enabled']))) {
+				return;
 			}
 
-			if ($updates) {
-				craft()->content->saveContent($localizedElement, false, false);
+			$this->_elementBeforeSave = craft()->elements->getElementById($this->_element->id, $this->_element->elementType, $this->_element->locale);
+			$locales = $this->_element->getLocales();
 
-				if ($localizedElement instanceof EntryModel) {
-					craft()->entryRevisions->saveVersion($localizedElement);
+			// Matrix elements return a non-associative array from getLocales(). Normalize it.
+			if ($this->_element instanceof MatrixBlockModel) {
+				$locales = array_flip($locales);
+			}
+
+			$defaultTargets = array_key_exists($this->_element->locale, $pluginSettings->localeDefaults) ? $pluginSettings->localeDefaults[$this->_element->locale]['targets'] : [];
+			$elementTargets = $this->_elementSettings['targets'];
+			$targets = [];
+
+			if (!empty($elementTargets)) {
+				$targets = $elementTargets;
+			} elseif (!empty($defaultTargets)) {
+				$targets = $defaultTargets;
+			}
+
+			foreach ($locales as $localeId => $localeInfo)
+			{
+				$localizedElement = craft()->elements->getElementById($this->_element->id, $this->_element->elementType, $localeId);
+				$matchingTarget = $targets === '*' || in_array($localeId, $targets);
+				$updates = false;
+
+				if ($localizedElement && $matchingTarget && $this->_element->locale !== $localeId) {
+					foreach ($localizedElement->getFieldLayout()->getFields() as $fieldLayoutField) {
+						$field = $fieldLayoutField->getField();
+
+						if ($this->updateElement($localizedElement, $field)) {
+							$updates = true;
+						}
+					}
+
+					if ($this->updateElement($localizedElement, 'title')) {
+						$updates = true;
+					}
+
+				}
+
+				if ($updates) {
+					craft()->content->saveContent($localizedElement, false, false);
+
+					if ($localizedElement instanceof EntryModel) {
+						craft()->entryRevisions->saveVersion($localizedElement);
+					}
 				}
 			}
 		}
