@@ -65,6 +65,10 @@ class LocaleSyncService extends BaseApplicationComponent
 			$locales = array_keys($locales);
 		}
 
+		if (count($locales) > 1) {
+			return;
+		}
+
 		$defaultTargets = array_key_exists($this->_element->locale, $pluginSettings->localeDefaults) ? $pluginSettings->localeDefaults[$this->_element->locale]['targets'] : [];
 		$elementTargets = $this->_elementSettings['targets'];
 		$targets = [];
