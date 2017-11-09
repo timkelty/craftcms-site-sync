@@ -1,7 +1,7 @@
 [
     {
         "version": "1.4.1",
-        "downloadUrl": "https://github.com/timkelty/localesync/archive/1.4.1.zip",
+        "downloadUrl": "https://github.com/timkelty/craft-localesync/archive/1.4.1.zip",
         "date": "2017-11-09T13:34:25+0000",
         "notes": [
             "[Improved] Add support for Category fields (Thanks @johndwells)"
@@ -9,7 +9,7 @@
     },
     {
         "version": "1.3.0",
-        "downloadUrl": "https://github.com/timkelty/localesync/archive/1.3.0.zip",
+        "downloadUrl": "https://github.com/timkelty/craft-localesync/archive/1.3.0.zip",
         "date": "2016-10-26T02:15:55",
         "notes": [
             "[Improved] Add support for Matrix fields (Thanks @erktime)"
@@ -17,7 +17,7 @@
     },
     {
         "version": "1.2.1",
-        "downloadUrl": "https://github.com/timkelty/localesync/archive/1.2.1.zip",
+        "downloadUrl": "https://github.com/timkelty/craft-localesync/archive/1.2.1.zip",
         "date": "2016-07-12T19:50:47",
         "notes": [
             "[Fixed] Feed url"
@@ -25,7 +25,7 @@
     },
     {
         "version": "1.2.0",
-        "downloadUrl": "https://github.com/timkelty/localesync/archive/1.2.0.zip",
+        "downloadUrl": "https://github.com/timkelty/craft-localesync/archive/1.2.0.zip",
         "date": "2016-05-17T10:59:23.318Z",
         "notes": [
             "[Improved] Expanded and simplified settings"
@@ -33,7 +33,7 @@
     },
     {
         "version": "1.1.0",
-        "downloadUrl": "https://github.com/timkelty/localesync/archive/1.1.0.zip",
+        "downloadUrl": "https://github.com/timkelty/craft-localesync/archive/1.1.0.zip",
         "date": "2016-05-16T10:59:23.318Z",
         "notes": [
             "[Improved] Save revisions"
@@ -41,7 +41,7 @@
     },
     {
         "version": "1.0.5",
-        "downloadUrl": "https://github.com/timkelty/localesync/archive/1.0.5.zip",
+        "downloadUrl": "https://github.com/timkelty/craft-localesync/archive/1.0.5.zip",
         "date": "2016-05-13T10:59:23.318Z",
         "notes": [
             "[Added] Initial release"
