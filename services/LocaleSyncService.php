@@ -112,11 +112,16 @@ class LocaleSyncService extends BaseApplicationComponent
 
 	public function updateElement(&$element, $field)
 	{
-		$update = false;
+		$fieldType = null;
+		$fieldHandle = null;
+		$translatable = false;
+		$elementsField = false;
 
 		if ($field instanceof Fieldmodel) {
 			$fieldHandle = $field->handle;
 			$translatable = $field->translatable;
+			$fieldType = $field->fieldType;
+			$elementsField = $field->fieldType instanceof BaseElementFieldType;
 		} elseif ($field === 'title') {
 			$fieldHandle = $field;
 			$translatable = true;
@@ -126,11 +131,21 @@ class LocaleSyncService extends BaseApplicationComponent
 		$overwrite = (isset($this->_elementSettings['overwrite']) && $this->_elementSettings['overwrite']);
 		$updateField = $overwrite || $matches;
 
-		if ($updateField && $translatable) {
-			$element->content->$fieldHandle = $this->_element->content->$fieldHandle;
-			$update = true;
+		if ($elementsField) {
+			$matches = $this->_elementBeforeSave->$fieldHandle->ids() === $element->$fieldHandle->ids();
 		}
 
-		return $update;
+		if ($updateField && $translatable) {
+
+			if ($elementsField) {
+				craft()->relations->saveRelations($field, $element, $this->_element->content->$fieldHandle);
+			} else {
+				$element->content->$fieldHandle = $this->_element->content->$fieldHandle;
+			}
+
+			return true;
+		}
+
+		return false;
 	}
 }
