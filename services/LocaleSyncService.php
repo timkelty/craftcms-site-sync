@@ -17,7 +17,7 @@ class LocaleSyncService extends BaseApplicationComponent
 			return;
 		}
 
-		return craft()->templates->render('localesync/_cp/entriesEditRightPane', [
+		return craft()->templates->render('localesync/_cp/editRightPane', [
 			'settings' => $settings,
 			'localeId' => $element->locale,
 		]);

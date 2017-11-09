@@ -24,6 +24,10 @@ class LocaleSyncPlugin extends BasePlugin
             return craft()->localeSync->getElementOptionsHtml($context['entry']);
         });
 
+        craft()->templates->hook('cp.categories.edit.right-pane', function (&$context) {
+            return craft()->localeSync->getElementOptionsHtml($context['category']);
+        });
+
         craft()->on('elements.onBeforeSaveElement', function (Event $event) {
             return craft()->localeSync->syncElementContent($event, craft()->request->getPost('localeSync'));
         });
