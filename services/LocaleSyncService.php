@@ -129,13 +129,12 @@ class LocaleSyncService extends BaseApplicationComponent
 
 		$matches = $this->_elementBeforeSave->content->$fieldHandle === $element->content->$fieldHandle;
 		$overwrite = (isset($this->_elementSettings['overwrite']) && $this->_elementSettings['overwrite']);
-		$updateField = $overwrite || $matches;
 
 		if ($elementsField) {
 			$matches = $this->_elementBeforeSave->$fieldHandle->ids() === $element->$fieldHandle->ids();
 		}
 
-		if ($updateField && $translatable) {
+		if ($translatable && ($overwrite || $matches)) {
 
 			if ($elementsField) {
 				craft()->relations->saveRelations($field, $element, $this->_element->content->$fieldHandle);
