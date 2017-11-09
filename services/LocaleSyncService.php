@@ -6,6 +6,7 @@ class LocaleSyncService extends BaseApplicationComponent
 	private $_elementBeforeSave;
 	private $_element;
 	private $_elementSettings;
+	private $_pluginSettings;
 
 	public function getElementOptionsHtml(BaseElementModel $element)
 	{
@@ -48,7 +49,7 @@ class LocaleSyncService extends BaseApplicationComponent
 
 	public function syncElementContent(Event $event, $elementSettings)
 	{
-		$pluginSettings = craft()->plugins->getPlugin('localeSync')->getSettings();
+		$this->_pluginSettings = craft()->plugins->getPlugin('localeSync')->getSettings();
 		$this->_element = $event->params['element'];
 		$this->_elementSettings = $elementSettings;
 
@@ -67,7 +68,7 @@ class LocaleSyncService extends BaseApplicationComponent
 			$locales = array_keys($locales);
 		}
 
-		$defaultTargets = array_key_exists($this->_element->locale, $pluginSettings->localeDefaults) ? $pluginSettings->localeDefaults[$this->_element->locale]['targets'] : [];
+		$defaultTargets = array_key_exists($this->_element->locale, $this->_pluginSettings->localeDefaults) ? $this->_pluginSettings->localeDefaults[$this->_element->locale]['targets'] : [];
 		$elementTargets = $this->_elementSettings['targets'];
 		$targets = [];
 
@@ -121,7 +122,8 @@ class LocaleSyncService extends BaseApplicationComponent
 		}
 
 		$matches = $this->_elementBeforeSave->content->$fieldHandle === $element->content->$fieldHandle;
-		$overwrite = (isset($this->_elementSettings['overwrite']) && $this->_elementSettings['overwrite']);
+		$overwrite = (bool) isset($this->_elementSettings['overwrite']) ? $this->_elementSettings['overwrite'] : $this->_pluginSettings->localeDefaults[$this->_element->locale]['overwrite'];
+
 		$updateField = $overwrite || $matches;
 
 		if ($updateField && $translatable) {
