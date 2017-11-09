@@ -61,9 +61,7 @@ class LocaleSyncService extends BaseApplicationComponent
 		$locales = $this->_element->getLocales();
 
 		// Normalize getLocales() from different elementTypes
-		if ($this->_element instanceof MatrixBlockModel) {
-			$locales = array_flip($locales);
-		} elseif ($this->_element instanceof EntryModel) {
+		if ($this->_element instanceof EntryModel) {
 			$locales = array_keys($locales);
 		}
 
