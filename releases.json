@@ -1,8 +1,8 @@
 [
     {
-        "version": "1.4.1",
-        "downloadUrl": "https://github.com/timkelty/craft-localesync/archive/1.4.1.zip",
-        "date": "2017-11-09T13:34:25",
+        "version": "1.4.2",
+        "downloadUrl": "https://github.com/timkelty/craft-localesync/archive/1.4.2.zip",
+        "date": "2017-11-09T13:34:50",
         "notes": [
             "[Improved] Add support for Category fields (Thanks @johndwells)"
         ]
