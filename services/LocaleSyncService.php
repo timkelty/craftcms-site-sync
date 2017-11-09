@@ -65,7 +65,7 @@ class LocaleSyncService extends BaseApplicationComponent
 			$locales = array_keys($locales);
 		}
 
-		if (count($locales) > 1) {
+		if (count($locales) < 2) {
 			return;
 		}
 
