@@ -2,7 +2,6 @@
     "name": "timkelty/craft-site-sync",
     "description": "Sync content to other sites on element save.",
     "type": "craft-plugin",
-    "version": "1.0.0",
     "keywords": [
         "craft",
         "cms",
