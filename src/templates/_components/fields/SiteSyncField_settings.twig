@@ -1,0 +1,26 @@
+{# @var craft \craft\web\twig\variables\CraftVariable #}
+{#
+/**
+ * Site Sync plugin for Craft CMS
+ *
+ * SiteSyncField Field Settings
+ *
+ * @author    Tim Kelty
+ * @copyright Copyright (c) 2018 Tim Kelty
+ * @link      https://github.com/timkelty
+ * @package   SiteSync
+ * @since     1.0.0
+ */
+#}
+
+{% import "_includes/forms" as forms %}
+
+{% do view.registerAssetBundle("timkelty\\sitesync\\assetbundles\\sitesync\\SiteSyncAsset") %}
+
+{{ forms.textField({
+    label: 'Some Attribute',
+    instructions: 'Enter some attribute here.',
+    id: 'someAttribute',
+    name: 'someAttribute',
+    value: field['someAttribute']})
+}}

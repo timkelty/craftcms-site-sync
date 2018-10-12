@@ -1,0 +1,43 @@
+{
+    "name": "timkelty/site-sync",
+    "description": "Sync content to other sites on element save.",
+    "type": "craft-plugin",
+    "version": "1.0.0",
+    "keywords": [
+        "craft",
+        "cms",
+        "craftcms",
+        "craft-plugin",
+        "site sync"
+    ],
+    "support": {
+        "docs": "https://github.com/timkelty/site-sync/blob/master/README.md",
+        "issues": "https://github.com/timkelty/site-sync/issues"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Tim Kelty",
+            "homepage": "https://github.com/timkelty"
+        }
+    ],
+    "require": {
+        "craftcms/cms": "^3.0.0-RC1"
+    },
+    "autoload": {
+        "psr-4": {
+          "timkelty\\sitesync\\": "src/"
+        }
+    },
+    "extra": {
+        "name": "Site Sync",
+        "handle": "site-sync",
+        "hasCpSettings": true,
+        "hasCpSection": false,
+        "changelogUrl": "https://raw.githubusercontent.com/timkelty/site-sync/master/CHANGELOG.md",
+        "components": {
+            "siteSyncService": "timkelty\\sitesync\\services\\SiteSyncService"
+        },
+        "class": "timkelty\\sitesync\\SiteSync"
+    }
+}
