@@ -8,9 +8,9 @@
  * @copyright Copyright (c) 2018 Tim Kelty
  */
 
-namespace timkelty\sitesync\console\controllers;
+namespace timkelty\craft\sitesync\console\controllers;
 
-use timkelty\sitesync\SiteSync;
+use timkelty\craft\sitesync\SiteSync;
 
 use Craft;
 use yii\console\Controller;

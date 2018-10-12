@@ -8,7 +8,7 @@
  * @copyright Copyright (c) 2018 Tim Kelty
  */
 
-namespace timkelty\sitesync\assetbundles\SiteSync;
+namespace timkelty\craft\sitesync\assetbundles\SiteSync;
 
 use Craft;
 use craft\web\AssetBundle;

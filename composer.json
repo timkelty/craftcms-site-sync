@@ -1,5 +1,5 @@
 {
-    "name": "timkelty/site-sync",
+    "name": "timkelty/craft-site-sync",
     "description": "Sync content to other sites on element save.",
     "type": "craft-plugin",
     "version": "1.0.0",
@@ -8,11 +8,13 @@
         "cms",
         "craftcms",
         "craft-plugin",
-        "site sync"
+        "site-sync",
+        "site",
+        "sync"
     ],
     "support": {
-        "docs": "https://github.com/timkelty/site-sync/blob/master/README.md",
-        "issues": "https://github.com/timkelty/site-sync/issues"
+        "docs": "https://github.com/timkelty/craft-site-sync/blob/master/README.md",
+        "issues": "https://github.com/timkelty/craft-site-sync/issues"
     },
     "license": "MIT",
     "authors": [
@@ -26,18 +28,18 @@
     },
     "autoload": {
         "psr-4": {
-          "timkelty\\sitesync\\": "src/"
+          "timkelty\\craft\\sitesync\\": "src/"
         }
     },
     "extra": {
-        "name": "Site Sync",
+        "name": "Site-Sync",
         "handle": "site-sync",
-        "hasCpSettings": true,
+        "hasCpSettings": false,
         "hasCpSection": false,
-        "changelogUrl": "https://raw.githubusercontent.com/timkelty/site-sync/master/CHANGELOG.md",
+        "changelogUrl": "https://raw.githubusercontent.com/timkelty/craft-site-sync/master/CHANGELOG.md",
         "components": {
-            "siteSyncService": "timkelty\\sitesync\\services\\SiteSyncService"
+            "content": "timkelty\\craft\\sitesync\\services\\Content"
         },
-        "class": "timkelty\\sitesync\\SiteSync"
+        "class": "timkelty\\craft\\sitesync\\SiteSync"
     }
 }

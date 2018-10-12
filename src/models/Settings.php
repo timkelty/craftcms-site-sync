@@ -8,9 +8,9 @@
  * @copyright Copyright (c) 2018 Tim Kelty
  */
 
-namespace timkelty\sitesync\models;
+namespace timkelty\craft\sitesync\models;
 
-use timkelty\sitesync\SiteSync;
+use timkelty\craft\sitesync\SiteSync;
 
 use Craft;
 use craft\base\Model;

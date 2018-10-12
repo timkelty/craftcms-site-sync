@@ -8,7 +8,7 @@
  * @copyright Copyright (c) 2018 Tim Kelty
  */
 
-namespace timkelty\sitesync\assetbundles\sitesyncfieldfield;
+namespace timkelty\craft\sitesync\assetbundles\sitesyncfieldfield;
 
 use Craft;
 use craft\web\AssetBundle;

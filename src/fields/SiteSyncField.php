@@ -8,10 +8,10 @@
  * @copyright Copyright (c) 2018 Tim Kelty
  */
 
-namespace timkelty\sitesync\fields;
+namespace timkelty\craft\sitesync\fields;
 
-use timkelty\sitesync\SiteSync;
-use timkelty\sitesync\assetbundles\sitesyncfieldfield\SiteSyncFieldFieldAsset;
+use timkelty\craft\sitesync\SiteSync;
+use timkelty\craft\sitesync\assetbundles\sitesyncfieldfield\SiteSyncFieldFieldAsset;
 
 use Craft;
 use craft\base\ElementInterface;
