@@ -21,7 +21,7 @@ use craft\console\Application as ConsoleApplication;
 use craft\services\Fields;
 use craft\events\RegisterComponentTypesEvent;
 use craft\events\ModelEvent;
-
+use craft\base\Element;
 use yii\base\Event;
 
 class SiteSync extends Plugin
@@ -38,6 +38,7 @@ class SiteSync extends Plugin
             'content' => \timkelty\craft\sitesync\services\Content::class,
         ]);
 
+        // Register field type
         Event::on(
             Fields::class,
             Fields::EVENT_REGISTER_FIELD_TYPES,
@@ -46,36 +47,10 @@ class SiteSync extends Plugin
             }
         );
 
-        Event::on(
-            Plugins::class,
-            Plugins::EVENT_AFTER_INSTALL_PLUGIN,
-            function (PluginEvent $event) {
-                if ($event->plugin === $this) {
-                    // We were just installed
-                }
-            }
-        );
-
         ModelEvent::on(
             Element::class,
             Element::EVENT_BEFORE_SAVE,
             [new listeners\BeforeElementSave, 'handle']
         );
-
     }
-
-    // protected function createSettingsModel()
-    // {
-    //     return new Settings();
-    // }
-    //
-    // protected function settingsHtml(): string
-    // {
-    //     return Craft::$app->view->renderTemplate(
-    //         'site-sync/settings',
-    //         [
-    //             'settings' => $this->getSettings()
-    //         ]
-    //     );
-    // }
 }
