@@ -27,10 +27,10 @@ class SiteSyncField extends Field
             'label' => 'Do Not Sync',
             'value' => null
         ],
-        [
-            'label' => 'Sync Identical Content',
-            'value' => 'identical'
-        ],
+        // [
+        //     'label' => 'Sync Identical Content',
+        //     'value' => 'identical'
+        // ],
         [
             'label' => 'Sync All Content',
             'value' => 'all'

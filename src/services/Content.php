@@ -29,11 +29,35 @@ class Content extends Component
             return;
         }
 
+        $fieldValue = $this->getFieldValue($element);
+
+        if (!$fieldValue) {
+            return;
+        }
+
         $siteElement = Craft::$app->getElements()->getElementById($element->id, get_class($element), $siteId);
         $siteElement->title = $element->title;
         $siteElement->slug = $element->slug;
         $siteElement->setFieldValues($element->getFieldValues());
         Craft::$app->getElements()->updateElementSlugAndUri($siteElement, false, false);
         Craft::$app->getContent()->saveContent($siteElement);
+    }
+
+    public function getFieldFromElement(Element $element)
+    {
+        $layout = $element->getFieldLayout();
+        $fields = array_filter($layout->getFields(), function($field) {
+            return $field instanceof \timkelty\craft\sitesync\fields\SiteSyncField;
+        });
+
+        // TODO: throw error if more that 1?
+        return array_shift($fields);
+    }
+
+    public function getFieldValue(Element $element)
+    {
+        $field = $this->getFieldFromElement($element);
+
+        return $element->getFieldValue($field->handle);
     }
 }

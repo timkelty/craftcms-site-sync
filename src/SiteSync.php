@@ -30,10 +30,6 @@ class SiteSync extends Plugin
     {
         parent::init();
 
-        if (Craft::$app instanceof ConsoleApplication) {
-            $this->controllerNamespace = 'timkelty\craft\sitesync\console\controllers';
-        }
-
         $this->setComponents([
             'content' => \timkelty\craft\sitesync\services\Content::class,
         ]);
