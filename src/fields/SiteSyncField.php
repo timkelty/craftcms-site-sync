@@ -46,7 +46,7 @@ class SiteSyncField extends Field
     {
         return Craft::$app->getView()->renderTemplate('_includes/forms/select', [
             'name' => $this->handle,
-            'value' => $value,
+            // 'value' => $value,
             'options' => $this->syncOptions,
         ]);
     }
