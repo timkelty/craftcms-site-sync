@@ -10,8 +10,7 @@
 
 namespace timkelty\craft\sitesync;
 
-use timkelty\craft\sitesync\models\Settings;
-use timkelty\craft\sitesync\fields\SiteSyncField;
+use timkelty\craft\sitesync\fields\SiteSyncSettingsField;
 
 use Craft;
 use craft\base\Plugin;
@@ -39,7 +38,7 @@ class SiteSync extends Plugin
             Fields::class,
             Fields::EVENT_REGISTER_FIELD_TYPES,
             function (RegisterComponentTypesEvent $event) {
-                $event->types[] = SiteSyncField::class;
+                $event->types[] = SiteSyncSettingsField::class;
             }
         );
 

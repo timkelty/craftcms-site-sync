@@ -12,6 +12,8 @@ class Content extends Component
     public function syncToSites(Element $element, array $siteIds = null)
     {
         // TODO: Check if element is even multisite enabled first
+        // TODO: editableSiteIdsForElement instead?
+        // Craft::$app->getIsMultiSite()
         $supportedSites = ElementHelper::supportedSitesForElement($element);
         $siteIds = $siteIds ?? array_map(function($siteInfo) {
             return (int) $siteInfo['siteId'];
@@ -38,7 +40,7 @@ class Content extends Component
         $siteElement = Craft::$app->getElements()->getElementById($element->id, get_class($element), $siteId);
         $siteElement->title = $element->title;
         $siteElement->slug = $element->slug;
-        $siteElement->setFieldValues($element->getFieldValues());
+        // $siteElement->setFieldValues($element->getFieldValues());
         Craft::$app->getElements()->updateElementSlugAndUri($siteElement, false, false);
         Craft::$app->getContent()->saveContent($siteElement);
     }
@@ -57,6 +59,10 @@ class Content extends Component
     public function getFieldValue(Element $element)
     {
         $field = $this->getFieldFromElement($element);
+
+        if (!$field) {
+            return;
+        }
 
         return $element->getFieldValue($field->handle);
     }

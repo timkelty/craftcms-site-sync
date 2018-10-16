@@ -20,23 +20,8 @@ use craft\helpers\Db;
 use yii\db\Schema;
 use craft\helpers\Json;
 
-class SiteSyncField extends Field
+class SiteSyncSettingsField extends Field
 {
-    public $syncOptions = [
-        [
-            'label' => 'Do Not Sync',
-            'value' => null
-        ],
-        // [
-        //     'label' => 'Sync Identical Content',
-        //     'value' => 'identical'
-        // ],
-        [
-            'label' => 'Sync All Content',
-            'value' => 'all'
-        ]
-    ];
-
     public static function displayName(): string
     {
         return Craft::t('site-sync', 'Site-Sync Settings');
@@ -44,10 +29,18 @@ class SiteSyncField extends Field
 
     public function getInputHtml($value, ElementInterface $element = null): string
     {
-        return Craft::$app->getView()->renderTemplate('_includes/forms/select', [
-            'name' => $this->handle,
-            // 'value' => $value,
-            'options' => $this->syncOptions,
-        ]);
+        $id = Craft::$app->getView()->formatInputId($this->handle);
+        $namespacedId = Craft::$app->getView()->namespaceInputId($id);
+
+        return Craft::$app->getView()->renderTemplate(
+            'site-sync/_fields/site-sync-settings/input.twig',
+            [
+                'name' => $this->handle,
+                'value' => $value,
+                'field' => $this,
+                'id' => $id,
+                'namespacedId' => $namespacedId,
+            ]
+        );
     }
 }
