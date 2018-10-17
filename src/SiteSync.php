@@ -43,9 +43,6 @@ class SiteSync extends Plugin
             Element::class,
             Element::EVENT_BEFORE_SAVE,
             [\timkelty\craft\sitesync\models\SiteSyncSettings::class, 'beforeElementSaveHandler']
-            // function(ModelEvent $event) {
-            //     (new \timkelty\craft\sitesync\models\SiteSyncElement($event->sender))->syncToSites();
-            // }
         );
     }
 }
