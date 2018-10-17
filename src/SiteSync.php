@@ -10,8 +10,6 @@
 
 namespace timkelty\craft\sitesync;
 
-use timkelty\craft\sitesync\fields\SiteSyncSettingsField;
-
 use Craft;
 use craft\base\Plugin;
 use craft\services\Plugins;
@@ -29,23 +27,25 @@ class SiteSync extends Plugin
     {
         parent::init();
 
-        $this->setComponents([
-            'content' => \timkelty\craft\sitesync\services\Content::class,
-        ]);
+        // $this->setComponents([
+        //     'content' => services\Content::class,
+        // ]);
 
-        // Register field type
         Event::on(
             Fields::class,
             Fields::EVENT_REGISTER_FIELD_TYPES,
             function (RegisterComponentTypesEvent $event) {
-                $event->types[] = SiteSyncSettingsField::class;
+                $event->types[] = \timkelty\craft\sitesync\fields\SiteSyncSettingsField::class;
             }
         );
 
         ModelEvent::on(
             Element::class,
             Element::EVENT_BEFORE_SAVE,
-            [new listeners\BeforeElementSave, 'handle']
+            [\timkelty\craft\sitesync\models\SiteSyncSettings::class, 'beforeElementSaveHandler']
+            // function(ModelEvent $event) {
+            //     (new \timkelty\craft\sitesync\models\SiteSyncElement($event->sender))->syncToSites();
+            // }
         );
     }
 }
