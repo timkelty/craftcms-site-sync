@@ -5,7 +5,9 @@ use Craft;
 use craft\events\ModelEvent;
 use craft\base\Model;
 use craft\base\Element;
+use craft\base\Field;
 use craft\helpers\ElementHelper;
+
 use timkelty\craft\sitesync\fields\SiteSyncSettingsField;
 
 class SiteSyncSettings extends Model
@@ -14,12 +16,22 @@ class SiteSyncSettings extends Model
     public $overwrite;
     private $element;
 
-    public static function beforeElementSaveHandler(ModelEvent $event)
-    {
-        $element = $event->sender;
-
-        return self::getSettingsFromElement($element)->syncToSites();
-    }
+    // public static function beforeElementSaveHandler(ModelEvent $event)
+    // {
+    //     $element = $event->sender;
+    //
+    //     if ($element->propagating) {
+    //         return;
+    //     }
+    //
+    //     $instance = self::getSettingsFromElement($element);
+    //
+    //     if (!$instance) {
+    //         return false;
+    //     }
+    //
+    //     return $instance->syncToSites();
+    // }
 
     public function __construct(Element $element, $config = [])
     {
@@ -48,6 +60,7 @@ class SiteSyncSettings extends Model
             return;
         }
 
+        $savedElement = Craft::$app->getElements()->getElementById($this->element->id, get_class($this->element), $this->element->siteId);
         $siteElement = Craft::$app->getElements()->getElementById($this->element->id, get_class($this->element), $siteId);
 
         if ($this->overwrite) {
@@ -55,11 +68,39 @@ class SiteSyncSettings extends Model
             $siteElement->slug = $this->element->slug;
             $siteElement->setFieldValues($this->element->getFieldValues());
         } else {
-            // TODO: update matching content only
+            $attributesToUpdate = array_merge($this->getTranslatableFieldHandles(), [
+                'title',
+                'slug'
+            ]);
+
+            foreach ($attributesToUpdate as $handle) {
+                $siteVal = $siteElement->getSerializedFieldValues([$handle]);
+                $savedVal = $savedElement->getSerializedFieldValues([$handle]);
+
+                // Values matched before change
+                if ($savedVal === $siteVal) {
+                    xdebug_break();
+                    $siteElement->{$handle} = $this->element->{$handle};
+                }
+            }
         }
 
-        Craft::$app->getElements()->updateElementSlugAndUri($siteElement, false, false);
-        Craft::$app->getContent()->saveContent($siteElement);
+        $siteElement->propagating = true;
+        Craft::$app->elements->saveElement($siteElement, true, false);
+    }
+
+    public function getTranslatableFieldHandles()
+    {
+        // TODO: getIsTranslatable?
+        // $element::isLocalized()
+        return array_map(function(Field $field) {
+            return $field->handle;
+        }, array_filter($this->element->getFieldLayout()->getFields(), function(Field $field) {
+            // TODO: support more?
+            // xdebug_break();
+            return $field->getIsTranslatable();
+            // return $field->translationMethod === $field::TRANSLATION_METHOD_SITE;
+        }));
     }
 
     private function getSupportedSiteIds()
@@ -72,9 +113,29 @@ class SiteSyncSettings extends Model
         }, $supportedSites);
     }
 
-    private static function getSettingsFromElement(Element $element): SiteSyncSettings
+    // TODO: rename to create
+    public static function getSettingsFromElement(Element $element): ?SiteSyncSettings
     {
         $field = self::getSettingsField($element);
+
+        // Matrix
+        if (!$field && method_exists($element, 'getOwner')) {
+            $owner = $element->getOwner();
+            $field = self::getSettingsField($owner);
+
+
+
+            if ($field) {
+                $instance = $owner->getFieldValue($field->handle);
+                $instance->element = $element;
+
+                return $instance;
+                // return new SiteSyncSettings($element, [
+                //     'syncEnabled' => true,
+                //     'overwrite' => true,
+                // ]);
+            }
+        }
 
         if (!$field) {
             return null;

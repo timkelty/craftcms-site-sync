@@ -23,6 +23,16 @@ class SiteSyncSettingsField extends Field
         return Craft::t('site-sync', 'Site-Sync Settings');
     }
 
+    // public static function hasContentColumn(): bool
+    // {
+    //     return false;
+    // }
+    //
+    // public static function supportedTranslationMethods(): array
+    // {
+    //     return [];
+    // }
+
     public function beforeSave(bool $isNew): bool
     {
         // TODO: disallow multiple fields in the same layout

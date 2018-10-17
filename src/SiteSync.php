@@ -19,6 +19,7 @@ use craft\services\Fields;
 use craft\events\RegisterComponentTypesEvent;
 use craft\events\ModelEvent;
 use craft\base\Element;
+use craft\elements\Entry;
 use yii\base\Event;
 
 class SiteSync extends Plugin
@@ -42,7 +43,7 @@ class SiteSync extends Plugin
         ModelEvent::on(
             Element::class,
             Element::EVENT_BEFORE_SAVE,
-            [\timkelty\craft\sitesync\models\SiteSyncSettings::class, 'beforeElementSaveHandler']
+            [new \timkelty\craft\sitesync\handlers\BeforeEntrySave, 'handle']
         );
     }
 }
