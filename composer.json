@@ -36,9 +36,6 @@
         "hasCpSettings": false,
         "hasCpSection": false,
         "changelogUrl": "https://raw.githubusercontent.com/timkelty/craft-site-sync/master/CHANGELOG.md",
-        "components": {
-            "content": "timkelty\\craft\\sitesync\\services\\Content"
-        },
-        "class": "timkelty\\craft\\sitesync\\SiteSync"
+        "class": "timkelty\\craft\\sitesync\\Plugin"
     }
 }

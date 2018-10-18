@@ -3,35 +3,33 @@ namespace timkelty\craft\sitesync\models;
 
 use Craft;
 use craft\events\ModelEvent;
-use craft\base\Model;
 use craft\base\Element;
 use craft\base\Field;
 use craft\helpers\ElementHelper;
+use timkelty\craft\sitesync\Field as SiteSyncField;
 
-use timkelty\craft\sitesync\fields\SiteSyncSettingsField;
-
-class SiteSyncSettings extends Model
+class Syncable extends \craft\base\Model
 {
     public $syncEnabled;
     public $overwrite;
     private $element;
 
-    // public static function beforeElementSaveHandler(ModelEvent $event)
-    // {
-    //     $element = $event->sender;
-    //
-    //     if ($element->propagating) {
-    //         return;
-    //     }
-    //
-    //     $instance = self::getSettingsFromElement($element);
-    //
-    //     if (!$instance) {
-    //         return false;
-    //     }
-    //
-    //     return $instance->syncToSites();
-    // }
+    public static function beforeElementSaveHandler(ModelEvent $event)
+    {
+        $element = $event->sender;
+
+        if ($element->propagating) {
+            return;
+        }
+
+        $instance = self::getSettingsFromElement($element);
+
+        if (!$instance) {
+            return false;
+        }
+
+        return $instance->syncToSites();
+    }
 
     public function __construct(Element $element, $config = [])
     {
@@ -115,7 +113,7 @@ class SiteSyncSettings extends Model
     }
 
     // TODO: rename to create
-    public static function getSettingsFromElement(Element $element): ?SiteSyncSettings
+    public static function getSettingsFromElement(Element $element): ?Syncable
     {
         $field = self::getSettingsField($element);
 
@@ -131,7 +129,7 @@ class SiteSyncSettings extends Model
                 $instance->element = $element;
 
                 return $instance;
-                // return new SiteSyncSettings($element, [
+                // return new Syncable($element, [
                 //     'syncEnabled' => true,
                 //     'overwrite' => true,
                 // ]);
@@ -149,7 +147,7 @@ class SiteSyncSettings extends Model
     {
         $layout = $element->getFieldLayout();
         $fields = array_filter($layout->getFields(), function($field) {
-            return $field instanceof SiteSyncSettingsField;
+            return $field instanceof SiteSyncField;
         });
 
         // TODO: throw error if more that 1?
