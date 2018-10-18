@@ -13,6 +13,9 @@ class Syncable extends \craft\base\Model
     public $enabled = false;
     public $overwrite = false;
     public $element;
+    public $syncTitle = true;
+    public $syncSlug = true;
+    public $syncFields = true;
 
     public static function beforeElementSaveHandler(ModelEvent $event)
     {
@@ -69,37 +72,50 @@ class Syncable extends \craft\base\Model
             return false;
         }
 
-        $savedElement = Craft::$app->getElements()->getElementById($this->element->id, get_class($this->element), $this->element->siteId);
         $siteElement = Craft::$app->getElements()->getElementById($this->element->id, get_class($this->element), $siteId);
+        $updates = $this->getUpdatesForElement($siteElement);
 
-        if ($this->overwrite) {
-            $siteElement->title = $this->element->title;
-            $siteElement->slug = $this->element->slug;
-            $siteElement->setFieldValues($this->element->getFieldValues());
-        } else {
-            $attributesToUpdate = array_merge($this->getTranslatableFieldHandles(), [
-                'title',
-                'slug'
-            ]);
-
-            foreach ($attributesToUpdate as $handle) {
-
-                // Compare serialized values so we can make a strict comparison
-                $siteVal = $siteElement->getSerializedFieldValues([$handle]);
-                $savedVal = $savedElement->getSerializedFieldValues([$handle]);
-
-                // Values matched before change
-                if ($savedVal === $siteVal) {
-                    $siteElement->{$handle} = $this->element->{$handle};
-                }
-            }
+        if (!$updates) {
+            return false;
         }
 
         // TODO: set scenario?
         // $siteElement->setScenario(Element::SCENARIO_ESSENTIALS);
-
+        Craft::configure($siteElement, $updates);
         $siteElement->propagating = true;
         return Craft::$app->elements->saveElement($siteElement, true, false);
+    }
+
+    private function getUpdatesForElement(Element $siteElement): array
+    {
+        $savedElement = Craft::$app->getElements()->getElementById($this->element->id, get_class($this->element), $this->element->siteId);
+        $updates = [];
+
+        if ($this->syncFields) {
+            if ($this->overwrite) {
+                $updates = $this->element->getFieldValues();
+            } else {
+                foreach ($this->getTranslatableFieldHandles() as $handle) {
+                    if ($savedElement->getSerializedFieldValues([$handle]) === $siteElement->getSerializedFieldValues([$handle])) {
+                        $updates[$handle] = $this->element->{$handle};
+                    }
+                }
+            }
+        }
+
+        if ($this->syncTitle) {
+            if ($this->overwrite || $savedElement->title === $siteElement->title) {
+                $updates['title'] = $this->element->title;
+            }
+        }
+
+        if ($this->syncSlug) {
+            if ($this->overwrite || $savedElement->slug === $siteElement->slug) {
+                $updates['slug'] = $this->element->slug;
+            }
+        }
+
+        return $updates;
     }
 
     private function getTranslatableFieldHandles()
