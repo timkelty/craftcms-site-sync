@@ -24,25 +24,27 @@ class Field extends \craft\base\Field
         return parent::beforeSave($isNew);
     }
 
+    public function serializeValue($value, ElementInterface $element = null)
+    {
+        unset($value['element']);
+
+        return parent::serializeValue($value, $element);
+    }
+
     public function normalizeValue($value, ElementInterface $element = null)
     {
         if ($value instanceof Syncable) {
             return $value;
         }
 
-        $config = $value ?? [];
+        $config = array_merge($value ?? [], [
+            'element' => $element,
+        ]);
 
-        // From DB (should never happen)
-        // if (is_string($value)) {
-        //     $config = Json::decodeIfJson($value);
-        // // From form submit
-        // } elseif (is_array($value)) {
-        //     $config = $value;
-        // } else {
-        //     // load defaults from settings?
-        // }
+        // TODO: load defaults from field settings
+        // TODO: validate before returning
 
-        return new Syncable($element, $config);
+        return new Syncable($config);
     }
 
     public function getInputHtml($value, ElementInterface $element = null): string

@@ -10,52 +10,63 @@ use timkelty\craft\sitesync\Field as SiteSyncField;
 
 class Syncable extends \craft\base\Model
 {
-    public $syncEnabled;
-    public $overwrite;
-    private $element;
+    public $enabled = false;
+    public $overwrite = false;
+    public $element;
 
     public static function beforeElementSaveHandler(ModelEvent $event)
     {
         $element = $event->sender;
 
-        if ($element->propagating) {
+        if (!$element->isLocalized() || $element->propagating) {
             return;
         }
 
-        $instance = self::getSettingsFromElement($element);
+        $syncable = self::findFieldData($element);
 
-        if (!$instance) {
+        if (!$syncable || !$syncable->enabled) {
+            return;
+        }
+
+        // Set element explicily here for when we get field data from an owner
+        // element (Entry), but are syncing a child element (Matrix Block)
+        $syncable->element = $element;
+
+        $syncable->propagateToSites();
+    }
+
+    private static function findFieldData(Element $element): ?Syncable
+    {
+        $layout = $element->getFieldLayout();
+        $fields = array_filter($layout->getFields(), function($field) {
+            return $field instanceof SiteSyncField;
+        });
+        $field = array_shift($fields);
+
+        // Do owners have a field? (e.g. Matrix blocks)
+        if (!$field && method_exists($element, 'getOwner')) {
+            return self::findFieldData($element->getOwner());
+        }
+
+        // No syncable fields
+        if (!$field) {
+            return null;
+        }
+
+        return $element->getFieldValue($field->handle);
+    }
+
+    public function propagateToSites()
+    {
+        foreach ($this->getSupportedSiteIds() as $siteId) {
+            $this->propagateToSite($siteId);
+        }
+    }
+
+    public function propagateToSite(int $siteId): bool
+    {
+        if (!$this->enabled || $this->element->siteId === $siteId) {
             return false;
-        }
-
-        return $instance->syncToSites();
-    }
-
-    public function __construct(Element $element, $config = [])
-    {
-        $this->element = $element;
-
-        parent::__construct($config);
-    }
-
-    public function syncToSites(array $siteIds = null)
-    {
-        $siteIds = $siteIds ?? $this->getSupportedSiteIds();
-
-        foreach ($siteIds as $siteId) {
-            $this->syncToSite($siteId);
-        }
-    }
-
-    public function syncToSite(int $siteId)
-    {
-        // TODO: Check if element is even multisite enabled first
-        if ($this->element->siteId === $siteId) {
-            return;
-        }
-
-        if (!$this->syncEnabled) {
-            return;
         }
 
         $savedElement = Craft::$app->getElements()->getElementById($this->element->id, get_class($this->element), $this->element->siteId);
@@ -84,20 +95,20 @@ class Syncable extends \craft\base\Model
             }
         }
 
+        // TODO: set scenario?
+        // $siteElement->setScenario(Element::SCENARIO_ESSENTIALS);
+
         $siteElement->propagating = true;
-        Craft::$app->elements->saveElement($siteElement, true, false);
+        return Craft::$app->elements->saveElement($siteElement, true, false);
     }
 
-    public function getTranslatableFieldHandles()
+    private function getTranslatableFieldHandles()
     {
-        // TODO: getIsTranslatable?
-        // $element::isLocalized()
         return array_map(function(Field $field) {
             return $field->handle;
         }, array_filter($this->element->getFieldLayout()->getFields(), function(Field $field) {
-            // TODO: support more?
-            // xdebug_break();
             return $field->getIsTranslatable();
+            // TODO: does this make more sense?
             // return $field->translationMethod === $field::TRANSLATION_METHOD_SITE;
         }));
     }
@@ -110,47 +121,5 @@ class Syncable extends \craft\base\Model
         return array_map(function($siteInfo) {
             return (int) $siteInfo['siteId'];
         }, $supportedSites);
-    }
-
-    // TODO: rename to create
-    public static function getSettingsFromElement(Element $element): ?Syncable
-    {
-        $field = self::getSettingsField($element);
-
-        // Matrix
-        if (!$field && method_exists($element, 'getOwner')) {
-            $owner = $element->getOwner();
-            $field = self::getSettingsField($owner);
-
-
-
-            if ($field) {
-                $instance = $owner->getFieldValue($field->handle);
-                $instance->element = $element;
-
-                return $instance;
-                // return new Syncable($element, [
-                //     'syncEnabled' => true,
-                //     'overwrite' => true,
-                // ]);
-            }
-        }
-
-        if (!$field) {
-            return null;
-        }
-
-        return $element->getFieldValue($field->handle);
-    }
-
-    private static function getSettingsField(Element $element)
-    {
-        $layout = $element->getFieldLayout();
-        $fields = array_filter($layout->getFields(), function($field) {
-            return $field instanceof SiteSyncField;
-        });
-
-        // TODO: throw error if more that 1?
-        return array_shift($fields);
     }
 }
