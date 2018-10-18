@@ -74,12 +74,13 @@ class SiteSyncSettings extends Model
             ]);
 
             foreach ($attributesToUpdate as $handle) {
+
+                // Compare serialized values so we can make a strict comparison
                 $siteVal = $siteElement->getSerializedFieldValues([$handle]);
                 $savedVal = $savedElement->getSerializedFieldValues([$handle]);
 
                 // Values matched before change
                 if ($savedVal === $siteVal) {
-                    xdebug_break();
                     $siteElement->{$handle} = $this->element->{$handle};
                 }
             }
