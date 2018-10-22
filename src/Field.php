@@ -9,7 +9,6 @@ use timkelty\craft\sitesync\models\Syncable;
 class Field extends \craft\base\Field
 {
     public $defaults;
-    public $showSources;
 
     public static function displayName(): string
     {
