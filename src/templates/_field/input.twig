@@ -1,19 +1,37 @@
 {% import "_includes/forms" as forms %}
 
-<hr>
+<div class="SiteSyncField matrixblock {{ value.enabled ? 'is-enabled' }}" id="{{ id }}">
+  <div class="SiteSyncField-header titlebar">
+    <div class="SiteSyncField-toggleField">
+      {{ forms.lightswitch({
+          name: name ~ '[enabled]',
+          id: toggleFieldId,
+          labelId: toggleLabelId,
+      }) }}
+      <label id="{{ toggleLabelId }}">
+        Enabled
+      </label>
+    </div>
+  </div>
+  <div class="SiteSyncField-panel {{ not value.enabled ? 'disabled' }}">
+    {{ forms.checkboxSelectField({
+        label: 'Sources',
+        allLabel: 'All Content',
+        showAllOption: true,
+        id: '',
+        name: '',
+        options: {
+          'title': 'Title'|t('site-sync'),
+          'fields': 'Fields'|t('site-sync'),
+          'slug': 'Slug'|t('site-sync'),
+        },
+      })
+    }}
 
-<div class="indent">
-  {{ forms.lightswitchField({
-      label: 'Sync Changes',
-      instructions: 'Changes to fields with matching content will be synced to other sites.',
-      name: name ~ '[enabled]',
-  }) }}
-
-  {{ forms.lightswitchField({
-      label: 'Overwrite',
-      name: name ~ '[overwrite]',
-      instructions: 'Replace all content in other sites with the current content. For your protection, this setting will not persist after saving.',
-  }) }}
+    {{ forms.lightswitchField({
+        label: 'Overwrite',
+        name: name ~ '[overwrite]',
+        instructions: 'Replace content in other sites, even if it doesn\'t match.',
+    }) }}
+  </div>
 </div>
-
-<hr>

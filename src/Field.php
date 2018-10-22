@@ -52,15 +52,15 @@ class Field extends \craft\base\Field
         $id = Craft::$app->getView()->formatInputId($this->handle);
         $namespacedId = Craft::$app->getView()->namespaceInputId($id);
 
-        return Craft::$app->getView()->renderTemplate(
-            'site-sync/_field/input.twig',
-            [
-                'name' => $this->handle,
-                'value' => $value,
-                'field' => $this,
-                'id' => $id,
-                'namespacedId' => $namespacedId,
-            ]
-        );
+        Craft::$app->getView()->registerAssetBundle(FieldAssets::class);
+        Craft::$app->getView()->registerJs("$('#{$namespacedId}').siteSyncField();");
+
+        return Craft::$app->getView()->renderTemplate('site-sync/_field/input.twig', [
+            'name' => $this->handle,
+            'value' => $value,
+            'id' => $id,
+            'toggleFieldId' => $id . '-toggleField',
+            'toggleLabelId' => $id . '-toggleLabel',
+        ]);
     }
 }

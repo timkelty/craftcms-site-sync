@@ -1,0 +1,34 @@
+.SiteSyncField {
+  /* .matrixblock overrides */
+  padding-bottom: 0 !important;
+}
+
+.SiteSyncField.is-enabled .SiteSyncField-toggleField label {
+  color: #576575;
+}
+
+.SiteSyncField.is-enabled .SiteSyncField-panel {
+  pointer-events: auto;
+}
+
+.SiteSyncField-header {
+  /* .matrixblock overrides */
+  padding-left: 13px !important;
+  padding-right: 13px !important;
+  margin-bottom: 0 !important;
+}
+
+.SiteSyncField-toggleField {
+  display: flex;
+}
+
+.SiteSyncField-toggleField label {
+  margin-left: 8px;
+}
+
+.SiteSyncField-panel {
+  padding: 14px 0;
+
+  /* Make lightswitch unclickable */
+  pointer-events: none;
+}
