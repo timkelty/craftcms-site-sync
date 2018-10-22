@@ -1,1 +1,8 @@
-TODO: settings: include title, slug, field options?
+{% import "_includes/forms" as forms %}
+
+{% include '_includes/forms/field' with {
+  label: 'Defaults',
+  instructions: 'The default state for the field.',
+  input: defaultsHtml,
+  warning: 'Values for this field will not persist between element saves. They will always revert to the state configured here.'
+} %}

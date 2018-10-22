@@ -5,11 +5,10 @@
     <div class="SiteSyncField-toggleField">
       {{ forms.lightswitch({
           name: name ~ '[enabled]',
-          id: toggleFieldId,
-          labelId: toggleLabelId,
+          labelId: toggleLabelId ?? null,
           on: value.enabled,
       }) }}
-      <label id="{{ toggleLabelId }}">
+      <label id="{{ toggleLabelId ?? null }}">
         Enabled
       </label>
     </div>
@@ -20,11 +19,11 @@
         allLabel: 'All Content',
         showAllOption: true,
         name: name ~ '[sources]',
-        value: value.sources,
+        values: value.sources,
         options: {
-          'title': 'Title'|t('site-sync'),
-          'slug': 'Slug'|t('site-sync'),
-          'fields': 'Fields'|t('site-sync'),
+          'title': 'Title',
+          'slug': 'Slug',
+          'fields': 'Fields',
         },
       })
     }}
@@ -32,8 +31,14 @@
     {{ forms.lightswitchField({
         label: 'Overwrite',
         name: name ~ '[overwrite]',
-        value: value.overwrite,
+        on: value.overwrite,
         instructions: 'Replace content in other sites, even if it doesn\'t match.',
     }) }}
+
+    {# {% if value.element %}
+      <div class="field centeralign">
+        <p class="warning">Values for this field will not persist between saves.</p>
+      </div>
+    {% endif %} #}
   </div>
 </div>

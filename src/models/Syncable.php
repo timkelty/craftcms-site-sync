@@ -10,11 +10,12 @@ use timkelty\craft\sitesync\Field as SiteSyncField;
 
 class Syncable extends \craft\base\Model
 {
-    public $enabled = true;
-    public $overwrite = true;
+    public $enabled = false;
+    public $overwrite = false;
+    public $sources = self::SOURCE_ALL;
     public $element;
-    public $sources;
 
+    const SOURCE_ALL = '*';
     const SOURCE_TITLE = 'title';
     const SOURCE_SLUG = 'slug';
     const SOURCE_FIELDS = 'fields';
@@ -22,6 +23,7 @@ class Syncable extends \craft\base\Model
     public static function supportedSources(): array
     {
         return [
+            self::SOURCE_ALL,
             self::SOURCE_TITLE,
             self::SOURCE_SLUG,
             self::SOURCE_FIELDS,
@@ -90,16 +92,32 @@ class Syncable extends \craft\base\Model
             return false;
         }
 
-        // TODO: set scenario?
-        // $siteElement->setScenario(Element::SCENARIO_ESSENTIALS);
         Craft::configure($siteElement, $updates);
+
+        // Don't bother validating custom fields for other sites
+        $siteElement->setScenario(Element::SCENARIO_ESSENTIALS);
         $siteElement->propagating = true;
+
         return Craft::$app->elements->saveElement($siteElement, true, false);
+    }
+
+    public function rules()
+    {
+        $rules = [
+            [['enabled', 'overwrite', 'element', 'sources'], 'required'],
+            [
+                'sources',
+                'in',
+                'range' => self::supportedSources(),
+            ],
+        ];
+
+        return $rules;
     }
 
     private function hasSource(string $source): bool
     {
-        return $this->sources === '*' || in_array($source, $this->sources);
+        return $this->sources === self::SOURCE_ALL || in_array($source, $this->sources);
     }
 
     private function getUpdatesForElement(Element $siteElement): array
@@ -139,9 +157,10 @@ class Syncable extends \craft\base\Model
         return array_map(function(Field $field) {
             return $field->handle;
         }, array_filter($this->element->getFieldLayout()->getFields(), function(Field $field) {
-            return $field->getIsTranslatable();
+            return $field->translationMethod === $field::TRANSLATION_METHOD_SITE;
+
             // TODO: does this make more sense?
-            // return $field->translationMethod === $field::TRANSLATION_METHOD_SITE;
+            // return $field->getIsTranslatable();
         }));
     }
 

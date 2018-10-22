@@ -28,8 +28,11 @@
       var on = $lightswitch.data('lightswitch').on;
       var $panel = this.$element.find('.SiteSyncField-panel');
       this.$element.toggleClass('is-enabled', on);
-      $panel.find(':input').prop('disabled', !on);
       $panel.add($panel.find('.lightswitch')).toggleClass('disabled', !on);
+
+      // Commenting out for now, so that our field settings still get submitted.
+      // Consider passing an option to control.
+      // $panel.find(':input').prop('disabled', !on);
     }
   };
 
