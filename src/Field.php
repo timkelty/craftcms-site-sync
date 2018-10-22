@@ -37,14 +37,13 @@ class Field extends \craft\base\Field
             return $value;
         }
 
-        $config = array_merge($value ?? [], [
-            'element' => $element,
-        ]);
+        $syncable = new Syncable($value);
+        $syncable->element = $element;
 
         // TODO: load defaults from field settings
         // TODO: validate before returning
 
-        return new Syncable($config);
+        return $syncable;
     }
 
     public function getInputHtml($value, ElementInterface $element = null): string

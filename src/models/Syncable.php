@@ -10,12 +10,23 @@ use timkelty\craft\sitesync\Field as SiteSyncField;
 
 class Syncable extends \craft\base\Model
 {
-    public $enabled = false;
-    public $overwrite = false;
+    public $enabled = true;
+    public $overwrite = true;
     public $element;
-    public $syncTitle = true;
-    public $syncSlug = true;
-    public $syncFields = true;
+    public $sources;
+
+    const SOURCE_TITLE = 'title';
+    const SOURCE_SLUG = 'slug';
+    const SOURCE_FIELDS = 'fields';
+
+    public static function supportedSources(): array
+    {
+        return [
+            self::SOURCE_TITLE,
+            self::SOURCE_SLUG,
+            self::SOURCE_FIELDS,
+        ];
+    }
 
     public static function beforeElementSaveHandler(ModelEvent $event)
     {
@@ -86,12 +97,17 @@ class Syncable extends \craft\base\Model
         return Craft::$app->elements->saveElement($siteElement, true, false);
     }
 
+    private function hasSource(string $source): bool
+    {
+        return $this->sources === '*' || in_array($source, $this->sources);
+    }
+
     private function getUpdatesForElement(Element $siteElement): array
     {
         $savedElement = Craft::$app->getElements()->getElementById($this->element->id, get_class($this->element), $this->element->siteId);
         $updates = [];
 
-        if ($this->syncFields) {
+        if ($this->hasSource(self::SOURCE_FIELDS)) {
             if ($this->overwrite) {
                 $updates = $this->element->getFieldValues();
             } else {
@@ -103,13 +119,13 @@ class Syncable extends \craft\base\Model
             }
         }
 
-        if ($this->syncTitle) {
+        if ($this->hasSource(self::SOURCE_TITLE)) {
             if ($this->overwrite || $savedElement->title === $siteElement->title) {
                 $updates['title'] = $this->element->title;
             }
         }
 
-        if ($this->syncSlug) {
+        if ($this->hasSource(self::SOURCE_SLUG)) {
             if ($this->overwrite || $savedElement->slug === $siteElement->slug) {
                 $updates['slug'] = $this->element->slug;
             }

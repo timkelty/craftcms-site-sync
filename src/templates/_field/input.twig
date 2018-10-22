@@ -7,6 +7,7 @@
           name: name ~ '[enabled]',
           id: toggleFieldId,
           labelId: toggleLabelId,
+          on: value.enabled,
       }) }}
       <label id="{{ toggleLabelId }}">
         Enabled
@@ -18,8 +19,8 @@
         label: 'Sources',
         allLabel: 'All Content',
         showAllOption: true,
-        id: '',
-        name: '',
+        name: name ~ '[sources]',
+        value: value.sources,
         options: {
           'title': 'Title'|t('site-sync'),
           'fields': 'Fields'|t('site-sync'),
@@ -31,6 +32,7 @@
     {{ forms.lightswitchField({
         label: 'Overwrite',
         name: name ~ '[overwrite]',
+        value: value.overwrite,
         instructions: 'Replace content in other sites, even if it doesn\'t match.',
     }) }}
   </div>
