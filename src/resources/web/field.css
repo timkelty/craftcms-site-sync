@@ -7,10 +7,6 @@
   color: #576575;
 }
 
-.SiteSyncField.is-enabled .SiteSyncField-panel {
-  pointer-events: auto;
-}
-
 .SiteSyncField-header {
   /* .matrixblock overrides */
   padding-left: 13px !important;
@@ -28,7 +24,9 @@
 
 .SiteSyncField-panel {
   padding: 14px 0;
+}
 
+.SiteSyncField-panel.disabled {
   /* Make lightswitch unclickable */
   pointer-events: none;
 }
