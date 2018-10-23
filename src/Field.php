@@ -22,7 +22,8 @@ class Field extends \craft\base\Field
 
     public function serializeValue($value, ElementInterface $element = null)
     {
-        return parent::serializeValue(null, $element);
+        // Don't bother, since we don't store the data
+        return null;
     }
 
     public function normalizeValue($value, ElementInterface $element = null): Syncable
