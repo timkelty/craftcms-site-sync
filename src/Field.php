@@ -34,6 +34,8 @@ class Field extends \craft\base\Field
         $syncable = new Syncable($value);
         $syncable->element = $element;
 
+        // TODO: is there a better place for this validation to occur?
+        // Ideally, I'd add the errors to the $element via getElementValidationRules
         if (!$syncable->validate()) {
             Craft::error(
                 Craft::t('site-sync', 'Syncable failed validation: ') . print_r($syncable->getErrors(), true),
