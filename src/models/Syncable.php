@@ -34,7 +34,7 @@ class Syncable extends \craft\base\Model
     {
         $element = $event->sender;
 
-        if (!$element->isLocalized() || $element->propagating) {
+        if (!$element->isLocalized() || !$element->validate() || $element->propagating) {
             return;
         }
 
