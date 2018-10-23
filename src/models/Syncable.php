@@ -96,15 +96,25 @@ class Syncable extends \craft\base\Model
 
         // Don't bother validating custom fields for other sites
         $siteElement->setScenario(Element::SCENARIO_ESSENTIALS);
+
+        // Prevent recursion
         $siteElement->propagating = true;
 
         return Craft::$app->elements->saveElement($siteElement, true, false);
     }
 
+    public function beforeValidate()
+    {
+        $this->sources = $this->sources ?: [];
+
+        return true;
+    }
+
     public function rules()
     {
         $rules = [
-            [['enabled', 'overwrite', 'element', 'sources'], 'required'],
+            [['enabled', 'overwrite'], 'boolean'],
+            [['element'], 'required'],
             [
                 'sources',
                 'in',
