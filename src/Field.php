@@ -46,10 +46,7 @@ class Field extends \craft\base\Field
 
     public function getInputHtml($value, ElementInterface $element = null): string
     {
-        $syncable = new Syncable($this->defaults);
-        $syncable->element = $element;
-
-        return $this->getFieldHtml($this->handle, $syncable);
+        return $this->getFieldHtml($this->handle, $value);
     }
 
     public function getSettingsHtml(): string
