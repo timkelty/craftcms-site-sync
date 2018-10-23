@@ -10,3 +10,4 @@ Sync content to other sites on element save.
 - [ ] Value/label usability improvements (`toggleLabelId`)
 - [ ] Fix compatibility with CP Field Links
 - [ ] Change "Title" name if there is a custom.
+- [ ] Implement getElementValidationRules to add errors to the element
