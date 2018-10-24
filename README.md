@@ -11,3 +11,4 @@ Sync content to other sites on element save.
 - [ ] Fix compatibility with CP Field Links
 - [ ] Change "Title" name if there is a custom.
 - [ ] Implement getElementValidationRules to add errors to the element
+- [ ] Ensure elements are only saved when they have pending changes
