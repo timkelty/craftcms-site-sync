@@ -72,11 +72,14 @@ class Syncable extends \craft\base\Model
         return $element->getFieldValue($field->handle);
     }
 
-    public function propagateToSites()
+    public function propagateToSites(): array
     {
-        foreach ($this->getSupportedSiteIds() as $siteId) {
-            $this->propagateToSite($siteId);
-        }
+        $siteIds = $this->getSupportedSiteIds();
+        $propagated = array_map(function($siteId) {
+            return $this->propagateToSite($siteId);
+        }, $siteIds);
+
+        return array_combine($siteIds, $propagated);
     }
 
     public function propagateToSite(int $siteId): bool
