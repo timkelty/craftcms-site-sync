@@ -32,7 +32,8 @@ class Field extends \craft\base\Field
             return $value;
         }
 
-        $syncable = new Syncable($value);
+        $config = $value ?? $this->defaults;
+        $syncable = new Syncable($config);
         $syncable->element = $element;
 
         // TODO: is there a better place for this validation to occur?
