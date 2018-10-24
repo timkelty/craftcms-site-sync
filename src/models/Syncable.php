@@ -96,6 +96,11 @@ class Syncable extends \craft\base\Model
         }
 
         $siteElement = Craft::$app->getElements()->getElementById($this->element->id, get_class($this->element), $siteId);
+
+        if (!$siteElement) {
+            return false;
+        }
+
         $updates = $this->getUpdatesForElement($siteElement);
 
         if (!$updates) {
