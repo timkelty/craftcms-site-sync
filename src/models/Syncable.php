@@ -34,7 +34,11 @@ class Syncable extends \craft\base\Model
     {
         $element = $event->sender;
 
-        if (!$element->isLocalized() || !$element->validate() || $element->propagating) {
+        if (!$element->isLocalized() ||
+            !$element->validate() ||
+            $element->propagating ||
+            $event->isNew
+        ) {
             return;
         }
 
@@ -84,7 +88,10 @@ class Syncable extends \craft\base\Model
 
     public function propagateToSite(int $siteId): bool
     {
-        if (!$this->enabled || $this->element->siteId === $siteId) {
+        if (!$this->enabled ||
+            $this->element->siteId === $siteId ||
+            !$this->element->id
+        ) {
             return false;
         }
 
