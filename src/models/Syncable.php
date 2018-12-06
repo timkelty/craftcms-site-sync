@@ -78,7 +78,8 @@ class Syncable extends \craft\base\Model
 
     public function propagateToSites(): array
     {
-        $siteIds = $this->getSupportedSiteIds();
+        $siteIds = ElementHelper::editableSiteIdsForElement($this->element);
+
         $propagated = array_map(function($siteId) {
             return $this->propagateToSite($siteId);
         }, $siteIds);
@@ -187,15 +188,5 @@ class Syncable extends \craft\base\Model
             // TODO: does this make more sense?
             // return $field->getIsTranslatable();
         }));
-    }
-
-    private function getSupportedSiteIds()
-    {
-        // TODO: should we use editableSiteIdsForElement instead?
-        $supportedSites = ElementHelper::supportedSitesForElement($this->element);
-
-        return array_map(function($siteInfo) {
-            return (int) $siteInfo['siteId'];
-        }, $supportedSites);
     }
 }
