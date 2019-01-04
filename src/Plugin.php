@@ -1,14 +1,14 @@
 <?php
 
-namespace timkelty\craft\sitesync;
+namespace timkelty\craftcms\sitesync;
 
 use craft\base\Element;
 use craft\services\Fields;
 use craft\events\RegisterComponentTypesEvent;
 use craft\events\ModelEvent;
 use yii\base\Event;
-use timkelty\craft\sitesync\Field as SiteSyncField;
-use timkelty\craft\sitesync\models\Syncable;
+use timkelty\craftcms\sitesync\Field as SiteSyncField;
+use timkelty\craftcms\sitesync\models\Syncable;
 
 class Plugin extends \craft\base\Plugin
 {

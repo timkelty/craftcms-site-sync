@@ -1,6 +1,6 @@
 <?php
 
-namespace timkelty\craft\sitesync;
+namespace timkelty\craftcms\sitesync;
 
 use craft\web\assets\cp\CpAsset;
 

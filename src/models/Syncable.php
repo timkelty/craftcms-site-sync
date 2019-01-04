@@ -1,12 +1,12 @@
 <?php
-namespace timkelty\craft\sitesync\models;
+namespace timkelty\craftcms\sitesync\models;
 
 use Craft;
 use craft\events\ModelEvent;
 use craft\base\Element;
 use craft\base\Field;
 use craft\helpers\ElementHelper;
-use timkelty\craft\sitesync\Field as SiteSyncField;
+use timkelty\craftcms\sitesync\Field as SiteSyncField;
 
 class Syncable extends \craft\base\Model
 {

@@ -1,10 +1,10 @@
 <?php
 
-namespace timkelty\craft\sitesync;
+namespace timkelty\craftcms\sitesync;
 
 use Craft;
 use craft\base\ElementInterface;
-use timkelty\craft\sitesync\models\Syncable;
+use timkelty\craftcms\sitesync\models\Syncable;
 
 class Field extends \craft\base\Field
 {

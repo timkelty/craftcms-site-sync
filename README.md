@@ -8,7 +8,7 @@ In a [multi-site](https://docs.craftcms.com/v3/sites.html) configuration, transl
 
 **Site-Sync** allows you to propagate and sychronize changes on a per-field basis, whenever you save an element. In addition to any field content (including Matrix, et al.), it can also sync `title` and `slug` content, as those are *always* translatable in Craft.
 
-Unlike the [Craft 2 version](https://github.com/timkelty/craft-site-sync/tree/craft-2) and [other similar plugins](https://github.com/Goldinteractive/craft3-sitecopy), this plugin is implemented as a field for a few key reasons:
+Unlike the [Craft 2 version](https://github.com/timkelty/craftcms-site-sync/tree/craft-2) and [other similar plugins](https://github.com/Goldinteractive/craft3-sitecopy), this plugin is implemented as a field for a few key reasons:
 
 - It works when saving an element in the HUD.
 - Multiple fields can be created with different default settings.
@@ -16,18 +16,18 @@ Unlike the [Craft 2 version](https://github.com/timkelty/craft-site-sync/tree/cr
 ## Installation
 
 ```shell
-$ composer require timkelty/craft-site-sync
+$ composer require timkelty/craftcms-site-sync
 ```
 
 ## Usage
 
 Each field layout where you would like to perform syncing must contain a **Site-Sync Settings** field.
 
-![Site-Sync Settings Field](https://raw.githubusercontent.com/timkelty/craft-site-sync/master/resources/screenshot-field.png)
+![Site-Sync Settings Field](https://raw.githubusercontent.com/timkelty/craftcms-site-sync/master/resources/screenshot-field.png)
 
 In the field settings you can configure the default state of the field. Note, that unlike most fields, changes to this field do not persist between element saves. They will always revert to the state configured in the field settings.
 
-![Site-Sync Settings Field](https://raw.githubusercontent.com/timkelty/craft-site-sync/master/resources/screenshot-field-settings.png)
+![Site-Sync Settings Field](https://raw.githubusercontent.com/timkelty/craftcms-site-sync/master/resources/screenshot-field-settings.png)
 
 When you save an entry with a **Site-Sync Settings** field:
 
