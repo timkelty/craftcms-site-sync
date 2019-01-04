@@ -2,7 +2,6 @@
 
 Synchronize content between sites in a multi-site [Craft CMS](https://craftcms.com/) installation.
 
-
 ---
 
 ## Why?
@@ -48,7 +47,7 @@ This also means (if you want to get crazy), that you could include a **Site-Sync
 ## Installation
 
 ```shell
-$ composer require timkelty/craft-site-sync:^1.0.0
+$ composer require timkelty/craft-site-sync
 ```
 
 ## Roadmap
