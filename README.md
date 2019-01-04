@@ -2,9 +2,7 @@
 
 Synchronize content between sites in a multi-site [Craft CMS](https://craftcms.com/) installation.
 
----
-
-## Why?
+## Motivation
 
 In a [multi-site](https://docs.craftcms.com/v3/sites.html) configuration, translatable field content is propagated to other sites _only on initial save_. If you want to edit translatable content and propagate those changes to your other sites, you have to recreate the changes on each site. 🤢
 
@@ -14,6 +12,12 @@ Unlike the [Craft 2 version](https://github.com/timkelty/craft-site-sync/tree/cr
 
 - It works when saving an element in the HUD.
 - Multiple fields can be created with different default settings.
+
+## Installation
+
+```shell
+$ composer require timkelty/craft-site-sync
+```
 
 ## Usage
 
@@ -38,17 +42,6 @@ When _any_ element (e.g. `MatrixBlock`, `Entry`) is saved, the plugin will trave
 For example, this means you can have a single **Site-Sync Settings** field on your `Entry` layout, but a nested `MatrixBlock` will still find it and use those settings for syncing.
 
 This also means (if you want to get crazy), that you could include a **Site-Sync Settings** field on a `MatrixBlock` to limit the scope of the syncing to that block only. Or, you could include one on the `Entry` layout and override it with another on a **MatrixBlock** layout. While this approach is supported, it can get exponentially confusing for the user and likely isn't practical for most uses.
-
-## Requirements
-
-- Craft ^3.0.28
-- PHP ^7.0
-
-## Installation
-
-```shell
-$ composer require timkelty/craft-site-sync
-```
 
 ## Roadmap
 
