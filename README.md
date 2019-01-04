@@ -1,6 +1,7 @@
-![Site-Sync Settings Field](https://raw.githubusercontent.com/timkelty/craft-site-sync/master/resources/screenshot-field.png)
+# Site-Sync
 
 Synchronize content between sites in a multi-site [Craft CMS](https://craftcms.com/) installation.
+
 
 ---
 
@@ -18,6 +19,8 @@ Unlike the [Craft 2 version](https://github.com/timkelty/craft-site-sync/tree/cr
 ## Usage
 
 Each field layout where you would like to perform syncing must contain a **Site-Sync Settings** field.
+
+![Site-Sync Settings Field](https://raw.githubusercontent.com/timkelty/craft-site-sync/master/resources/screenshot-field.png)
 
 In the field settings you can configure the default state of the field. Note, that unlike most fields, changes to this field do not persist between element saves. They will always revert to the state configured in the field settings.
 
