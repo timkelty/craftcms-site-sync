@@ -8,7 +8,7 @@ class FieldAssets extends \craft\web\AssetBundle
 {
     public function init()
     {
-        $this->sourcePath = "@timkelty/craft/sitesync/resources/web";
+        $this->sourcePath = "@timkelty/craftcms/sitesync/resources/web";
 
         $this->depends = [
             CpAsset::class,
