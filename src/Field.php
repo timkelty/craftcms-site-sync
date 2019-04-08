@@ -40,7 +40,7 @@ class Field extends \craft\base\Field
         // Ideally, I'd add the errors to the $element via getElementValidationRules
         if (!$syncable->validate()) {
             Craft::error(
-                Craft::t('site-sync', 'Syncable failed validation: ') . print_r($syncable->getErrors(), true),
+                Craft::t('site-sync', 'Syncable failed validation: ') . json_encode($syncable->getErrors()),
                 __METHOD__
             );
         }

@@ -141,6 +141,7 @@ class Syncable extends \craft\base\Model
                 'sources',
                 'in',
                 'range' => self::supportedSources(),
+                'allowArray' => true
             ],
         ];
 
