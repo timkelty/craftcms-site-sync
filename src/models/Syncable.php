@@ -58,6 +58,12 @@ class Syncable extends \craft\base\Model
     private static function findFieldData(Element $element): ?Syncable
     {
         $layout = $element->getFieldLayout();
+
+        // No layout (some plugins)
+        if (!$layout) {
+            return null;
+        }
+
         $fields = array_filter($layout->getFields(), function($field) {
             return $field instanceof SiteSyncField;
         });
