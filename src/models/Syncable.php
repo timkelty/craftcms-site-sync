@@ -210,6 +210,7 @@ class Syncable extends \craft\base\Model
     /**
      * Some elements (e.g. MatrixBlock) don't have a getIsEditable method, and therefore
      * don't work as expected with ElementHelper::editableSiteIdsForElement.
+     * @see https://github.com/craftcms/cms/issues/4116
      */
     private function getSiteIdsForElement(Element $element): array
     {
