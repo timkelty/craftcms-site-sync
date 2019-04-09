@@ -20,7 +20,7 @@ class Syncable extends \craft\base\Model
     const SOURCE_SLUG = 'slug';
     const SOURCE_FIELDS = 'fields';
 
-    public static function supportedSources(): array
+    private static function supportedSources(): array
     {
         return [
             self::SOURCE_ALL,
@@ -28,6 +28,16 @@ class Syncable extends \craft\base\Model
             self::SOURCE_SLUG,
             self::SOURCE_FIELDS,
         ];
+    }
+
+    private static function elementSupportsPermissions(Element $element): bool
+    {
+        return
+            $element instanceof \craft\elements\Assets ||
+            $element instanceof \craft\elements\Category ||
+            $element instanceof \craft\elements\Entry ||
+            $element instanceof \craft\elements\Tag ||
+            $element instanceof \craft\elements\User;
     }
 
     public static function beforeElementSaveHandler(ModelEvent $event)
@@ -84,7 +94,7 @@ class Syncable extends \craft\base\Model
 
     public function propagateToSites(): array
     {
-        $siteIds = ElementHelper::editableSiteIdsForElement($this->element);
+        $siteIds = $this->getSiteIdsForElement($this->element);
 
         $propagated = array_map(function($siteId) {
             return $this->propagateToSite($siteId);
@@ -162,7 +172,7 @@ class Syncable extends \craft\base\Model
             if ($this->overwrite) {
                 $updates = $this->element->getFieldValues();
             } else {
-                foreach ($this->getTranslatableFieldHandles() as $handle) {
+                foreach ($this->getTranslatableFieldHandles($this->element) as $handle) {
                     if ($savedElement->getSerializedFieldValues([$handle]) === $siteElement->getSerializedFieldValues([$handle])) {
                         $updates[$handle] = $this->element->{$handle};
                     }
@@ -185,15 +195,28 @@ class Syncable extends \craft\base\Model
         return $updates;
     }
 
-    private function getTranslatableFieldHandles()
+    private function getTranslatableFieldHandles(Element $element): array
     {
         return array_map(function(Field $field) {
             return $field->handle;
-        }, array_filter($this->element->getFieldLayout()->getFields(), function(Field $field) {
+        }, array_filter($element->getFieldLayout()->getFields(), function(Field $field) {
             return $field->translationMethod === $field::TRANSLATION_METHOD_SITE;
 
             // TODO: does this make more sense?
             // return $field->getIsTranslatable();
         }));
+    }
+
+    /**
+     * Some elements (e.g. MatrixBlock) don't have a getIsEditable method, and therefore
+     * don't work as expected with ElementHelper::editableSiteIdsForElement.
+     */
+    private function getSiteIdsForElement(Element $element): array
+    {
+        if ($this->elementSupportsPermissions($element)) {
+            return ElementHelper::editableSiteIdsForElement($element);
+        }
+
+        return $element->getSupportedSites();
     }
 }
