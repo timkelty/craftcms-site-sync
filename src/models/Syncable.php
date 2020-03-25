@@ -106,7 +106,7 @@ class Syncable extends \craft\base\Model
     public function propagateToSite(int $siteId): bool
     {
         if (!$this->enabled ||
-            $this->element->siteId === $siteId ||
+            (int)($this->element->siteId) === $siteId ||
             !$this->element->id
         ) {
             return false;
@@ -165,7 +165,7 @@ class Syncable extends \craft\base\Model
 
     private function getUpdatesForElement(Element $siteElement): array
     {
-        $savedElement = Craft::$app->getElements()->getElementById($this->element->id, get_class($this->element), $this->element->siteId);
+        $savedElement = Craft::$app->getElements()->getElementById($this->element->id, get_class($this->element), (int)($this->element->siteId));
         $updates = [];
 
         if ($this->hasSource(self::SOURCE_FIELDS)) {
