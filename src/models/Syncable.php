@@ -124,6 +124,10 @@ class Syncable extends \craft\base\Model
             return false;
         }
 
+		if (\array_key_exists('fields', $updates)) {
+            $siteElement->setFieldValues($updates['fields']);
+            unset($updates['fields']);
+		}
         Craft::configure($siteElement, $updates);
 
         // Don't bother validating custom fields for other sites
@@ -169,12 +173,13 @@ class Syncable extends \craft\base\Model
         $updates = [];
 
         if ($this->hasSource(self::SOURCE_FIELDS)) {
+            $updates['fields'] = [];
             if ($this->overwrite) {
-                $updates = $this->element->getFieldValues();
+                $updates['fields'] = $this->element->getFieldValues();
             } else {
                 foreach ($this->getTranslatableFieldHandles($this->element) as $handle) {
                     if ($savedElement->getSerializedFieldValues([$handle]) === $siteElement->getSerializedFieldValues([$handle])) {
-                        $updates[$handle] = $this->element->{$handle};
+                        $updates['fields'][$handle] = $this->element->{$handle};
                     }
                 }
             }
