@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 1.1.1 - 2020-04-22
+
+### Fixed
+
+- Insuccifient `fields` check (thanks @qbasic16…now I see why you did that 😉)
+
 ## 1.1.0 - 2020-03-25
 
 ### Changed

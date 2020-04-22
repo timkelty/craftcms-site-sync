@@ -124,7 +124,7 @@ class Syncable extends \craft\base\Model
             return false;
         }
 
-        if ($updates['fields'] ?? null) {
+        if (\array_key_exists('fields', $updates)) {
             $siteElement->setFieldValues($updates['fields']);
             unset($updates['fields']);
         }
