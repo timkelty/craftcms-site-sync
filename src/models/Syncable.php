@@ -2,9 +2,9 @@
 namespace timkelty\craftcms\sitesync\models;
 
 use Craft;
-use craft\events\ModelEvent;
 use craft\base\Element;
 use craft\base\Field;
+use craft\events\ModelEvent;
 use craft\helpers\ElementHelper;
 use timkelty\craftcms\sitesync\Field as SiteSyncField;
 
@@ -74,7 +74,7 @@ class Syncable extends \craft\base\Model
             return null;
         }
 
-        $fields = array_filter($layout->getFields(), function($field) {
+        $fields = array_filter($layout->getFields(), function ($field) {
             return $field instanceof SiteSyncField;
         });
         $field = array_shift($fields);
@@ -96,7 +96,7 @@ class Syncable extends \craft\base\Model
     {
         $siteIds = $this->getSiteIdsForElement($this->element);
 
-        $propagated = array_map(function($siteId) {
+        $propagated = array_map(function ($siteId) {
             return $this->propagateToSite($siteId);
         }, $siteIds);
 
@@ -124,10 +124,11 @@ class Syncable extends \craft\base\Model
             return false;
         }
 
-		if (\array_key_exists('fields', $updates)) {
+        if ($updates['fields'] ?? null) {
             $siteElement->setFieldValues($updates['fields']);
             unset($updates['fields']);
-		}
+        }
+
         Craft::configure($siteElement, $updates);
 
         // Don't bother validating custom fields for other sites
@@ -202,9 +203,9 @@ class Syncable extends \craft\base\Model
 
     private function getTranslatableFieldHandles(Element $element): array
     {
-        return array_map(function(Field $field) {
+        return array_map(function (Field $field) {
             return $field->handle;
-        }, array_filter($element->getFieldLayout()->getFields(), function(Field $field) {
+        }, array_filter($element->getFieldLayout()->getFields(), function (Field $field) {
             return $field->translationMethod === $field::TRANSLATION_METHOD_SITE;
 
             // TODO: does this make more sense?
