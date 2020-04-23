@@ -176,7 +176,7 @@ class Syncable extends \craft\base\Model
         if ($this->hasSource(self::SOURCE_FIELDS)) {
             $updates['fields'] = [];
             if ($this->overwrite) {
-                $updates['fields'] = $this->element->getFieldValues();
+                $this->element->propagateAll = true;
             } else {
                 foreach ($this->getTranslatableFieldHandles($this->element) as $handle) {
                     if ($savedElement->getSerializedFieldValues([$handle]) === $siteElement->getSerializedFieldValues([$handle])) {
