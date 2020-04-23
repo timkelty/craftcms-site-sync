@@ -8,13 +8,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ### Changed
 
-- "Overwrite" now works with translatable matrix fields. The behavior is leveraged from `\craft\base\Element::propagateAll`, mimicking the behavior when you create a new entry.
+- "Overwrite" now works with translatable Matrix & SuperTable fields, via thier `duplicateBlocks` methods.
 
 ## 1.1.1 - 2020-04-22
 
 ### Fixed
 
-- Insuccifient `fields` check (thanks @qbasic16…now I see why you did that 😉)
+- Insufficient `fields` check (thanks @qbasic16…now I see why you did that 😉)
 
 ## 1.1.0 - 2020-03-25
 
